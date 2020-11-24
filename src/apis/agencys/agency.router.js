@@ -1,0 +1,17 @@
+import { Router } from 'express'
+import AgencyController from './agency.controller'
+import authenticate from '../../middlewares/authentication/jwt.strategy'
+import authorization from '../../middlewares/authentication/authorization'
+import agencyController from './agency.controller'
+
+const router = Router()
+
+router.post('',authenticate,AgencyController.createOneAgency)
+router.get('',AgencyController.findAllAgency)
+// router.get('/listAgnecy',AgencyController.findManyAgency)
+router.get('/list' , AgencyController.findManyAgencyByRoute)
+router.get('/:route',AgencyController.findManyAgency)
+router.get('/:agencyID', AgencyController.findOneAgency)
+router.delete('/:agencyID',AgencyController.deleteAgency)
+
+export default router
