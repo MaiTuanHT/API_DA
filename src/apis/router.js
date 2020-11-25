@@ -7,7 +7,7 @@ import AgencyRouteRouter from './agency_routes/agency_routes.router'
 import TicketRouter from './tickets/ticket.router'
 import RateRouter from './rates/rates.router'
 import ScheduleRouter from './schedules/schedule.router'
-import ScheduleAgencyRouter from './schedules/scheduleAgency.route'
+// import ScheduleAgencyRouter from './schedules/scheduleAgency.route'
 import Router from 'express'
 
 const api = Router()
@@ -20,7 +20,7 @@ api.use('/vehicles/' , VehicleRouter)
 api.use('/tickets/' , TicketRouter)
 api.use('/rates/' , RateRouter)
 api.use('/schedules/', ScheduleRouter)
-api.use('/scheduleAgency/' , ScheduleAgencyRouter)
+// api.use('/scheduleAgency/' , ScheduleAgencyRouter)
 api.use('/agency_route/', AgencyRouteRouter)
 
 

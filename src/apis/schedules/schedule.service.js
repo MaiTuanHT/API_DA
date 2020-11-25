@@ -31,7 +31,28 @@ class ScheduleService{
 
     async findMany(query){
         try {
-            const schedules = ScheduleModel.find(query)
+            const schedules = await ScheduleModel.find(query).populate({
+                path: 'busID',
+                // populate: {
+                //     path: 'routeID',
+                //     model: 'routes'
+                // },
+                populate: {
+                    path: 'agencyID',
+                    model: 'agencys'
+                },
+                
+            }).populate({
+                path: 'busID',
+                populate: {
+                    path: 'routeID',
+                    model: 'routes'
+                },
+                // populate: {
+                //     path: 'agencyID',
+                //     model: 'agencys'
+                // },
+            })
             if(!schedules){
                 throw {
                     code: 404,
@@ -46,7 +67,7 @@ class ScheduleService{
 
     async findOne(query){
         try {
-            const schedule = (await ScheduleModel.findOne(query)).populated('vehicleID' , 'busID')
+            const schedule = (await ScheduleModel.findOne(query)).populate('busID')
             if(!schedule){
                 throw{
                     code: 404,

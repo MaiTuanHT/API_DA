@@ -27,7 +27,7 @@ class BusService{
 
     async findOne(query){
         try {
-            const bus = (await BusModel.findOne(query))
+            const bus = (await BusModel.findOne(query)).populate('routeID')
             if(!bus){
                 throw{
                     code: 404,

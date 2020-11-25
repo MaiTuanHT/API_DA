@@ -33,7 +33,19 @@ async function createOneSchedule(req, res) {
 
 async function findAllSchedule(req, res) {
     try {
-        const schedules = await scheduleService.findAll()
+        const schedules = await scheduleService.findMany({})
+        console.log(schedules);
+        return res.status(200).json(schedules);
+    } catch (error) {
+        checkError(error,res)
+    }
+}
+
+async function findAllScheduleForSearch(req, res) {
+    try {
+        const {stopLocation , startLocation} = req.query;
+        console.log(stopLocation)
+        const schedules = await scheduleService.findMany({stopLocation: stopLocation})
         console.log(schedules);
         return res.status(200).json(schedules);
     } catch (error) {
@@ -43,10 +55,11 @@ async function findAllSchedule(req, res) {
 
 async function findManySchedule(req, res) {
     try {
-        // const {agencyID} = req.params;
-        // console.log("id : "+ agencyID)
-        const schedules = await scheduleService.findMany({agencyID: "5fbb1db537e7483b6877db09"})
-        console.log(schedules);
+        const {agencyID} = req.params;
+        console.log("id : "+ agencyID)
+        const schedules = await scheduleService.findMany({agencyID: agencyID })
+        console.log(schedules)
+        // console.log(schedules);
         return res.status(200).json(schedules);
     } catch (error) {
         checkError(error,res)
@@ -55,7 +68,7 @@ async function findManySchedule(req, res) {
 
 async function findOneSchedule(req, res) {
     try {
-        const { scheduleID } = req.params
+        const {scheduleID}  = req.params
         const schedule = await scheduleService.findOne({
             _id: scheduleID
         })
@@ -82,4 +95,5 @@ export default {
     findOneSchedule,
     deleteSchedule,
     findManySchedule,
+    findAllScheduleForSearch,
 }
