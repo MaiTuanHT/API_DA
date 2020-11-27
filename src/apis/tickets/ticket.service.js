@@ -13,7 +13,7 @@ class TicketService{
 
     async findAll(){
         try {
-            const tickets = TicketModel.find()
+            const tickets = TicketModel.find().populate('scheduleID')
             if(!tickets){
                 throw {
                     code: 404,

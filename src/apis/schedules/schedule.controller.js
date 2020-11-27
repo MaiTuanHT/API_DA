@@ -22,6 +22,7 @@ async function createOneSchedule(req, res) {
         const schedule = {
             busID: data.busID,
             agencyID: bus.agencyID,
+            routeID : bus.routeID,
             date : data.date
         }
         const newSchedule = await scheduleService.CreateOne(schedule)
@@ -44,10 +45,19 @@ async function findAllSchedule(req, res) {
 async function findAllScheduleForSearch(req, res) {
     try {
         const {stopLocation , startLocation} = req.query;
-        console.log(stopLocation)
-        const schedules = await scheduleService.findMany({stopLocation: stopLocation})
-        console.log(schedules);
-        return res.status(200).json(schedules);
+        const schedules = await scheduleService.findMany({})
+        let list = []
+        if(schedules){
+            schedules.forEach(schedule => {
+                if(schedule.routeID.startLocation == startLocation && schedule.routeID.stopLocation == stopLocation){
+                    list.push(schedule)
+                }
+            });
+        }
+        // console.log(stopLocation)
+        // const schedules = await scheduleService.findMany({stopLocation: stopLocation })
+        // console.log(schedules);
+        return res.status(200).json(list);
     } catch (error) {
         checkError(error,res)
     }
@@ -69,9 +79,11 @@ async function findManySchedule(req, res) {
 async function findOneSchedule(req, res) {
     try {
         const {scheduleID}  = req.params
+        // console.log("id find one: " + scheduleID)
         const schedule = await scheduleService.findOne({
             _id: scheduleID
         })
+        console.log(schedule)
         return res.status(200).json(schedule)
     } catch (error) {
         checkError(error, res)

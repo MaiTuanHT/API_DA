@@ -84,8 +84,6 @@ async function deleteAgency(req , res) {
 async function findManyAgencyByRoute(req , res) {
     try {
         const { startLocation, stopLocation } = req.query
-        console.log("request.query : " + req.query)
-        console.log("startLocation : " + startLocation)
 
         const agencys = await routeService.findManyAgency({
             startLocation,

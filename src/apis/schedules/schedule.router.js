@@ -8,12 +8,12 @@ const router = Router()
 
 router.post('',ScheduleController.createOneSchedule)
 
-// router.get('', ScheduleController.findAllSchedule)
+router.get('', ScheduleController.findAllSchedule)
 router.get('/many/', scheduleController.findAllScheduleForSearch)
 
 router.get('/:agencyID', ScheduleController.findManySchedule)
 
-router.get('/:scheduleID', ScheduleController.findOneSchedule)
+router.get('/findone/:scheduleID', ScheduleController.findOneSchedule)
 router.delete('/:scheduleID',authenticate, authorization("Staff"),ScheduleController.deleteSchedule)
 
 export default router

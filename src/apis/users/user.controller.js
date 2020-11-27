@@ -130,14 +130,15 @@ async function signIn(req , res) {
 
         const payload = {
             userID: user._id,
-            userEmail: user.email,
-            userPassword: user.password,
+            fullName: user.fullName,
+            email: user.email,
+            // userPassword: user.password,
         }
 
-        const acessToken = await jwt.sign(payload, config.jwt_secret , {expiresIn: '30d'})
+        const accessToken = await jwt.sign(payload, config.jwt_secret , {expiresIn: '30d'})
         return res.status(200).json({
             message : 'login succesfully',
-            acessToken : acessToken
+            accessToken : accessToken
         })
     } catch (error) {
         checkError(error, res)

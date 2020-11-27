@@ -1,22 +1,45 @@
 import TicketService from './ticket.service'
 import checkError from '../../helpers/checkError'
+import ScheduleService from '../schedules/schedule.service'
+
+const scheduleService = new ScheduleService()
 const ticketService = new TicketService()
 
-async function createOneTicket(req, res) {
+async function createTicket(req, res) {
     try {
-        const {user} = req
-        console.log(user)
-
-        let data = req.body;
-        if(!user._id || user._id == undefined || !data.scheduleID || data.scheduleID== undefined){
+        const{fullName , email , phone , scheduleID} = req.body
+        let {seat} = req.body
+        if(seat == null || seat == undefined){
+            seat = 1;
+        }
+        
+        if(!fullName || fullName == undefined || !email ||email== undefined||
+            !phone || phone == undefined || !scheduleID ||scheduleID== undefined ){
             throw{
                 code: 400,
                 name: 'ErrorEmpty'
             }
         }
-        data.userID = user._id
-        const newTicket = await ticketService.createOne(data)
-       return res.status(201).json(newTicket)
+        const schedule = await scheduleService.findOne({_id: scheduleID})
+        const  data = {
+                fullName,
+                email,
+                phone,
+                scheduleID: schedule._id
+            }
+        let tickets = []
+        // data.userID = user._id
+
+        const promises = []
+
+        console.log("number seat : " + seat)
+        for (var i = 0 ; i< seat ; i++) {
+            promises.push(ticketService.createOne(data))
+        }
+
+        tickets = await Promise.all(promises)
+        console.log(tickets)
+       return res.status(201).json(tickets)
     } catch (error) {
         checkError(error,res)
     }
@@ -27,6 +50,29 @@ async function findAllTicket(req, res) {
         const tickets = await ticketService.findAll()
         console.log(tickets);
         return res.status(200).json(tickets);
+    } catch (error) {
+        checkError(error,res)
+    }
+}
+
+async function findTicketForSearch(req, res) {
+    try {
+        const {phone , date} = req.query;
+        console.log(phone)
+        console.log(date)
+        let ticketSearch = []
+        const tickets = await ticketService.findAll()
+        // console.log(tickets);
+        
+        tickets.forEach(ticket => {
+            if(ticket.phone == phone && ticket.scheduleID.date == date){
+                ticketSearch.push(ticket)
+            }
+        });
+       if(ticketSearch){
+            console.log(ticketSearch)
+        return res.status(200).json(ticketSearch);
+       }
     } catch (error) {
         checkError(error,res)
     }
@@ -89,10 +135,11 @@ async function deleteTicket(req , res) {
 
 
 export default {
-    createOneTicket,
+    createTicket,
     findAllTicket,
     findManyTicket,
     findOneTicket,
     // updateTicket,
+    findTicketForSearch,
     deleteTicket,
 }

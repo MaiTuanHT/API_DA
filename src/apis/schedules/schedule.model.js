@@ -15,6 +15,11 @@ const scheduleSchema = new Schema({
         type: Types.ObjectId,
         required : true,
         ref : 'agencys'
+    },
+    routeID:{
+        type: Types.ObjectId,
+        required: true,
+        ref: 'routes'
     }
 })
 

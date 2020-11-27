@@ -3,12 +3,20 @@ import { boolean } from 'joi'
 import{ model, Schema, Types } from 'mongoose'
 
 const ticketSchema = new Schema({
-    userID: {
-        type: Types.ObjectId,
-        ref: 'users',
+    fullName :{
+        type: String,
+        required: true
+    },
+    email :{
+        type: String,
+        required: true
+    },
+    phone :{
+        type: String,
         required: true
     },
     scheduleID:{
+        // type: String,
         type: Types.ObjectId,
         ref: 'schedules',
         required: true,
