@@ -17,6 +17,14 @@ const agencySchema = new Schema({
     discription: {
         type: String,
         required: false
+    },
+    scoreRate : {
+        type : Number,
+        default : 5
+    },
+    totalRate : {
+        type : Number,
+        default: 0
     }
 })
 

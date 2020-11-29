@@ -105,10 +105,10 @@ class AgencyService{
                    name: 'NotFoundAgency'
                }
            }
-           const agencyUpdate = await AgencyModel.save({
-               ...agency,
-               ...data,
-           })
+
+           console.log(agency)
+
+           const agencyUpdate = await AgencyModel.updateOne({ _id: id }, data)
 
            return agencyUpdate
        } catch (error) {

@@ -12,7 +12,15 @@ const rateSchema = new Schema({
         ref: 'agencys',
         required: true,
     },
-    score: {
+    quality: {
+        type: Number,
+        required: true
+    },
+    service: {
+        type: Number,
+        required: true
+    },
+    medium: {
         type: Number,
         required: true
     }

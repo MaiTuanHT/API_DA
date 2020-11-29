@@ -2,31 +2,94 @@ import RateService from './rates.service'
 
 import checkError from '../../helpers/checkError'
 
+import AgencyService from '../agencys/agency.service'
+
+import AgencyController from '../agencys/agency.controller'
+import agencyController from '../agencys/agency.controller'
+
 
 const rateService = new RateService()
+const agencyService = new AgencyService()
 
 
 async function createOneRate(req, res) {
     try {
-        const data = req.body;
-        console.log(data)
-        if(!data.userID || data.userID == undefined || !data.agencyID || data.agencyID == undefined
-            || !data.score || data.score == undefined){
+        const{quality , service , agencyID , userID} = req.body;
+        console.log(quality)
+        console.log(service)
+        console.log(agencyID)
+        console.log(userID)
+
+        if(!quality || quality == undefined || !service || service == undefined
+            || !agencyID || agencyID == undefined || !userID || userID == undefined){
             throw{
                 code: 400,
                 name: 'ErrorEmpty'
             }
         }
+        const data = {
+            quality ,
+            service ,
+            agencyID,
+            userID,
+            medium: (service + quality)/2
+        }
+
         const newRate = await rateService.CreateOne(data)
-       return res.status(201).json(newRate)
+
+        // const agency = agencyController.findOneAgency()
+        const agency = await agencyService.findOne({_id: agencyID})
+
+        const newRateAgency = {
+            scoreRate : (agency.scoreRate * agency.totalRate + newRate.medium)/(agency.totalRate + 1),
+            totalRate : agency.totalRate + 1
+        }
+        
+        const agencyUpdate = await agencyService.update(agencyID ,newRateAgency)
+        console.log(agencyUpdate)
+    
+        return res.status(201).json(newRate)
     } catch (error) {
         checkError(error, res)
     }
 }
 
+async function rateAgency(req , res) {
+   try {
+    const {agencyID} = req.query
+    console.log(agencyID)
+    if(!agencyID || agencyID == undefined){
+        throw{
+            code: 400,
+            name: 'ErrorEmpty'
+        }
+    }
+
+    const listRateAgency = await rateService.findMany({agencyID})
+    let rate = 0 ;
+    for(let i = 0 ; i < listRateAgency.length ; i++){
+        rate += listRateAgency[i].medium
+    }
+    if(listRateAgency.length == 0){
+        rate = 5 ;
+    }
+    else{
+        rate /= listRateAgency.length
+    }
+
+    const data = {
+        rate,
+        numberReview: listRateAgency.length
+    }
+    return res.status(200).json(data);
+   } catch (error) {
+        checkError(error, res)
+   }
+}
+
 async function findAllRate(req, res) {
     try {
-        const rates = await rateService.findAll()
+        const rates = await rateService.findMany({})
         console.log(rates);
         return res.status(200).json(rates);
     } catch (error) {
@@ -62,4 +125,5 @@ export default {
     findAllRate,
     findOneRate,
     deleteRate,
+    rateAgency
 }

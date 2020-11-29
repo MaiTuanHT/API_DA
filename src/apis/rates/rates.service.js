@@ -10,9 +10,9 @@ class RateService{
         }
     }
 
-    async findAll(){
+    async findMany(query){
         try {
-            const rates = RateModel.find()
+            const rates = RateModel.find(query)
             if(!rates){
                 throw {
                     code: 404,
