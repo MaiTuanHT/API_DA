@@ -1,12 +1,11 @@
 import mongose, { model, Schema, Types } from 'mongoose'
-
 const busSchema = new Schema({
     routeID: {
         type: Types.ObjectId,
         ref: 'routes',
         required: true,
     },
-    agencyID:{
+    agencyID: {
         type: Types.ObjectId,
         ref: 'agencys',
         required: true
@@ -14,7 +13,11 @@ const busSchema = new Schema({
     departureTime: {
         type: String,
         required: true
+    },
+    seat: {
+        type: Number,
+        required: true
     }
 })
 
-export default model('buses' , busSchema)
+export default model('buses', busSchema)

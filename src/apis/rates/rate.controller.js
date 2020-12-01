@@ -15,11 +15,6 @@ const agencyService = new AgencyService()
 async function createOneRate(req, res) {
     try {
         const{quality , service , agencyID , userID} = req.body;
-        console.log(quality)
-        console.log(service)
-        console.log(agencyID)
-        console.log(userID)
-
         if(!quality || quality == undefined || !service || service == undefined
             || !agencyID || agencyID == undefined || !userID || userID == undefined){
             throw{
@@ -46,7 +41,6 @@ async function createOneRate(req, res) {
         }
         
         const agencyUpdate = await agencyService.update(agencyID ,newRateAgency)
-        console.log(agencyUpdate)
     
         return res.status(201).json(newRate)
     } catch (error) {

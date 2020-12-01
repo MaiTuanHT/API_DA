@@ -3,7 +3,9 @@ import RouteService from '../routes/route.service'
 
 import checkError from '../../helpers/checkError'
 // import RoleService from '../roles/role.service'
+import RoleService from '../roles/role.service'
 
+const roleService = new RoleService()
 
 const busService = new BusService()
 const routeService = new RouteService()
@@ -11,27 +13,42 @@ const routeService = new RouteService()
 
 async function createOneBus(req, res) {
     try {
-        const data = req.body;
+
+        const { routeID, departureTime, seat } = req.body
+
+        // const data = req.body;
         // console.log(data)
-        if(!data.routeID || data.routeID == undefined || !data.departureTime || data.departureTime == undefined){
-            throw{
+        if (!routeID || routeID == undefined ||
+            !departureTime || departureTime == undefined ||
+            !seat || seat == undefined) {
+            throw {
                 code: 400,
                 name: 'ErrorEmpty'
             }
         }
-        
-        const routeID = data.routeID;
 
-        const route = await routeService.findOne({_id: routeID})
+        // const routeID = data.routeID;
+
+        const { user } = req
+        if (!user) {
+            throw {
+                code: 401,
+                name: "Unauthorazation"
+            }
+        }
+
+
+        const role = await roleService.findOne({ userID: user._id, roleName: "Staff" })
 
         const bus = {
-            routeID: data.routeID,
-            agencyID: route.agencyID,
-            departureTime : data.departureTime
+            routeID,
+            agencyID: role.agencyID,
+            departureTime,
+            seat,
         }
         console.log(bus)
         const newbus = await busService.CreateOne(bus)
-       return res.status(201).json(newbus)
+        return res.status(201).json(newbus)
     } catch (error) {
         checkError(error, res)
     }
@@ -39,11 +56,31 @@ async function createOneBus(req, res) {
 
 async function findAllBus(req, res) {
     try {
-        const buses = await busService.findAll()
+        const buses = await busService.findMany({})
         console.log(buses);
         return res.status(200).json(buses);
     } catch (error) {
-        checkError(error,res)
+        checkError(error, res)
+    }
+}
+
+async function findAllBusOfAgency(req, res) {
+    try {
+        const { user } = req
+        if (!user) {
+            throw {
+                code: 401,
+                name: "Unauthorazation"
+            }
+        }
+        const role = await roleService.findOne({ userID: user._id, roleName: "Staff" })
+
+        console.log(role)
+            // const agencyID = req.query
+        const buses = await busService.findMany({ agencyID: role.agencyID })
+        return res.status(200).json(buses);
+    } catch (error) {
+        checkError(error, res)
     }
 }
 
@@ -59,10 +96,10 @@ async function findOneBus(req, res) {
     }
 }
 
-async function deleteBus(req , res) {
+async function deleteBus(req, res) {
     try {
         const { busID } = req.params
-        await busService.delete({_id: busID})
+        await busService.delete({ _id: busID })
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)
@@ -75,4 +112,5 @@ export default {
     findAllBus,
     findOneBus,
     deleteBus,
+    findAllBusOfAgency
 }

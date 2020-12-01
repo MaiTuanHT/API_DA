@@ -6,9 +6,11 @@ import routeController from './route.controller'
 
 const router = Router()
 
-router.post('', RouteController.createOneRoute)
-router.get('',  RouteController.findAllRoute)
+router.post('', authenticate, authorization("Staff"), RouteController.createOneRoute)
+router.get('', RouteController.findAllRoute)
+router.get('/agency', authenticate, authorization("Staff"), RouteController.findAllRouteOfAgency)
+
 router.get('/:routeID', RouteController.findOneRoute)
-router.delete('/:routeID',RouteController.deleteRoute)
+router.delete('/:routeID', RouteController.deleteRoute)
 
 export default router

@@ -3,7 +3,7 @@ import error from '../../constants/error'
 import UserService from '../users/user.service'
 const userService = new UserService()
 
-class ScheduleService{
+class ScheduleService {
     async CreateOne(data) {
         try {
             const newSchedule = await new ScheduleModel(data)
@@ -14,10 +14,10 @@ class ScheduleService{
         }
     }
 
-    async findAll(){
+    async findAll() {
         try {
             const schedules = ScheduleModel.find().limit(20).populate('vehicleID', 'busID')
-            if(!schedules){
+            if (!schedules) {
                 throw {
                     code: 404,
                     name: 'NotFoundSchedule'
@@ -29,43 +29,21 @@ class ScheduleService{
         }
     }
 
-    async findMany(query){
+    async findMany(query) {
         try {
             console.log(query)
-            // const schedules = await ScheduleModel.find(query).populate({
-            //     path: 'busID',
-            //     populate: {
-            //         path: 'agencyID',
-            //         model: 'agencys'
-            //     },
-                
-            // }).populate({
-            //     path: 'busID',
-            //     populate: {
-            //         path: 'routeID',
-            //         model: 'routes'
-            //     },
-            // })
-
-             const schedules = await ScheduleModel.find(query).populate('agencyID').populate('routeID').populate('busID')
-
-            if(!schedules){
-                throw {
-                    code: 404,
-                    name: 'NotFoundSchedule'
-                }
-            }
+            const schedules = await ScheduleModel.find(query).populate('agencyID').populate('routeID').populate('busID')
             return schedules
         } catch (error) {
             throw error
         }
     }
 
-    async findOne(query){
+    async findOne(query) {
         try {
             const schedule = await ScheduleModel.findOne(query).populate('agencyID').populate('routeID').populate('busID')
-            if(!schedule){
-                throw{
+            if (!schedule) {
+                throw {
                     code: 404,
                     name: 'NotFoundSchedule'
                 }
@@ -77,16 +55,16 @@ class ScheduleService{
         }
     }
 
-    async delete(query){
+    async delete(query) {
         try {
             const schedule = ScheduleModel.findOne(query)
-            if(!schedule){
-                throw{
+            if (!schedule) {
+                throw {
                     code: 404,
                     name: 'NotFoundSchedule'
                 }
             }
-           
+
             await ScheduleModel.remove(schedule)
             return true
         } catch (error) {
@@ -95,24 +73,21 @@ class ScheduleService{
     }
 
 
-    async update(id , data){
-       try {
-           const schedule = await ScheduleModel.findById(id)
-           if(!schedule){
-               throw{
-                   code: 404,
-                   name: 'NotFoundSchedule'
-               }
-           }
-           const scheduleUpdate = await ScheduleModel.save({
-               ...schedule,
-               ...data,
-           })
+    async update(id, data) {
+        try {
+            const schedule = await ScheduleModel.findById(id)
+            if (!schedule) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundSchedule'
+                }
+            }
+            const scheduleUpdate = await ScheduleModel.save({ _id: id }, data)
 
-           return scheduleUpdate
-       } catch (error) {
-           throw error
-       }
+            return scheduleUpdate
+        } catch (error) {
+            throw error
+        }
     }
 }
 

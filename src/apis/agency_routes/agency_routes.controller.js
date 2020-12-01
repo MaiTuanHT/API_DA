@@ -8,21 +8,21 @@ import { query } from 'express-validator'
 
 
 const agency_route_Service = new AgencyRouteService()
-// const routeService = new RouteService()
+    // const routeService = new RouteService()
 
 
 async function createOneAgencyRoute(agency_route, req, res) {
     try {
         // const data = req.body;
         // console.log(data)
-        if(!agency_route || agency_route== undefined){
-            throw{
+        if (!agency_route || agency_route == undefined) {
+            throw {
                 code: 400,
                 name: 'ErrorEmpty'
             }
         }
         const newAgencyRoute = await agency_route_Service.CreateOne(agency_route)
-    //    return res.status(201).json(newAgencyRoute)
+            //    return res.status(201).json(newAgencyRoute)
     } catch (error) {
         checkError(error, res)
     }
@@ -31,10 +31,10 @@ async function createOneAgencyRoute(agency_route, req, res) {
 async function findAllAgencyRoute(req, res) {
     try {
         const agencys = await agency_route_Service.findAll()
-        // console.log(agencys);
+            // console.log(agencys);
         return res.status(200).json(agencys);
     } catch (error) {
-        checkError(error,res)
+        checkError(error, res)
     }
 }
 
@@ -51,11 +51,10 @@ async function findOneAgencyRoute(req, res) {
 }
 
 
-
-async function deleteAgencyRoute(req , res) {
+async function deleteAgencyRoute(req, res) {
     try {
         const { agency_route_ID } = req.params
-        await agency_route_Service.delete({_id: agency_route_ID})
+        await agency_route_Service.delete({ _id: agency_route_ID })
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)

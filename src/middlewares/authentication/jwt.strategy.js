@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import UserService from '../../apis/users/user.service'
 const userService = new UserService()
 
-const authenticate = (req, res, next ) => {
+const authenticate = (req, res, next) => {
     try {
         const accessToken = req.headers.authorization.split(' ')[1]
 
@@ -23,18 +23,18 @@ const authenticate = (req, res, next ) => {
                 return res.status(401).json({
                     code: 401,
                     name: 'UnAuthorization',
-                }) 
+                })
             }
-    
+
             req.user = user
-    
+
             return next()
         }).catch(error => {
             return res.status(401).json({
                 code: 401,
                 name: 'UnAuthorization',
                 error
-            }) 
+            })
         })
     } catch (error) {
         return res.status(401).json({

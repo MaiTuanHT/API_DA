@@ -27,7 +27,7 @@ class RoleService {
     }
 
 
-    async findAllRole(){
+    async findAllRole() {
         try {
             const roles = await RoleModel.find()
             return roles
@@ -36,9 +36,9 @@ class RoleService {
         }
     }
 
-    async findMany(query){
+    async findMany(query) {
         try {
-            const roles = await RoleModel.find(query)
+            const roles = await RoleModel.find(query).populate('userID')
             if (!roles) {
                 throw {
                     code: 404,
@@ -50,9 +50,7 @@ class RoleService {
             throw error
         }
     }
-
-
-    async delete(id){
+    async delete(id) {
         try {
             const role = await UserModel.findById(id)
             if (!staff) {
@@ -61,8 +59,8 @@ class RoleService {
                     name: 'RoleNotFound'
                 }
             }
-           await RoleModel.remove(role)
-           return true
+            await RoleModel.remove(role)
+            return true
         } catch (error) {
             throw error
         }

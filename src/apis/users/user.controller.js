@@ -5,108 +5,125 @@ import jwt from 'jsonwebtoken'
 import config from '../../configs/index'
 import error from '../../constants/error'
 import roleControler from '../roles/role.controller'
+import RoleService from '../roles/role.service'
 
 const userService = new UserService()
+const roleService = new RoleService()
 
 async function createOneUser(req, res) {
     try {
-        const {fullName , email , password , phoneNumber } = req.body
-        // console.log(req.body)
-        if(!fullName || !email || !password || ! phoneNumber){
+        const { user } = req
+        if (!user) {
             throw {
-                code : 400 ,
-                name : 'ValidateErorr'
+                code: 401,
+                name: 'UnAuthorization'
             }
         }
-       const checkEmail = await userService.checkEmail(email)
-       console.log(checkEmail)
-       if(checkEmail == undefined){
-           checkError(error ,res)
-       }
-       if(checkEmail){
-           console.log("Email da ton tai")
-           throw{
-               code : 400,
-               name : 'EmailAlreadyExist'
-           }
-       }
-        const hash = bcrypt.hashSync(password,10)
-        const data = {
-            fullName: fullName ,
-            email: email ,
-            password: hash,
-            phoneNumber : phoneNumber
-       }
-
-       const newUser = await userService.createOne(data)
-        if(newUser){
-            const userID = newUser._id
-            const roleName = 'Staff'
-            const {agencyID} = req.body
-            const role = {userID , roleName , agencyID}
-            roleControler.createOneRole(role, res)
+        const role = await roleService.findOne({ userID: user._id, roleName: "Manager" })
+        if (!role || role == undefined || role == null) {
+            throw {
+                code: 401,
+                name: 'NotFound'
+            }
         }
 
-       return res.status(201).json(newUser)
+        const { fullName, email, password, phoneNumber } = req.body
+        if (!fullName || !email || !password || !phoneNumber) {
+            throw {
+                code: 400,
+                name: 'ValidateErorr'
+            }
+        }
+        const checkEmail = await userService.checkEmail(email)
+        if (checkEmail == undefined) {
+            checkError(error, res)
+        }
+        if (checkEmail) {
+            throw {
+                code: 400,
+                name: 'EmailAlreadyExist'
+            }
+        }
+        const hash = bcrypt.hashSync(password, 10)
+        const data = {
+            fullName: fullName,
+            email: email,
+            password: hash,
+            phoneNumber: phoneNumber
+        }
+
+        const newUser = await userService.createOne(data)
+
+        if (!newUser || newUser == undefined || newUser == null) {
+            throw {
+                name: 'NotCreate'
+            }
+        }
+        const userID = newUser._id
+        const roleName = 'Staff'
+        const agencyID = role.agencyID
+        const newrole = { userID, agencyID, roleName }
+        await roleControler.createOneRole(newrole, res)
+
+        console.log("new user : ", newUser)
+        return res.status(201).json(newUser)
+
     } catch (error) {
         checkError(error, res)
     }
 }
 
-async function singUp(req , res) {
+async function singUp(req, res) {
     try {
-        const {fullName , email , password , phoneNumber} = req.body
-        console.log(req.body)
-        if(!fullName || !email || !password || ! phoneNumber){
+        const { fullName, email, password, phoneNumber } = req.body
+
+        if (!fullName || !email || !password || !phoneNumber) {
             throw {
-                code : 400 ,
-                name : 'ValidateErorr'
+                code: 400,
+                name: 'ValidateErorr'
             }
         }
-       const checkEmail = await userService.checkEmail(email)
-       console.log(checkEmail)
-       if(checkEmail == undefined){
-           checkError(error ,res)
-       }
-       if(checkEmail){
-           console.log("Email da ton tai")
-           throw{
-               code : 400,
-               name : 'EmailAlreadyExist'
-           }
-       }
-        const hash = bcrypt.hashSync(password,10)
-        const data = {
-            fullName: fullName ,
-            email: email ,
-            password: hash,
-            phoneNumber : phoneNumber
-       }
+        const checkEmail = await userService.checkEmail(email)
 
-       const newUser = await userService.createOne(data)
-        if(newUser){
+        if (checkEmail == undefined) {
+            checkError(error, res)
+        }
+        if (checkEmail) {
+            throw {
+                code: 400,
+                name: 'EmailAlreadyExist'
+            }
+        }
+        const hash = bcrypt.hashSync(password, 10)
+        const data = {
+            fullName: fullName,
+            email: email,
+            password: hash,
+            phoneNumber: phoneNumber
+        }
+
+        const newUser = await userService.createOne(data)
+        if (newUser) {
             const userID = newUser._id
             const roleName = 'Client'
-            const role = {userID , roleName}
+            const role = { userID, roleName }
             roleControler.createOneRole(role, res)
         }
 
-       return res.status(201).json(newUser)
+        return res.status(201).json(newUser)
 
     } catch (error) {
         checkError(error, res)
     }
 }
 
-async function signIn(req , res) {
+async function signIn(req, res) {
     try {
-        const { email , password} = req.body
-        // console.log(req.body)
-
-        if(!email || !password){
+        const { email, password } = req.body
+        if (!email || !password) {
             throw {
-                code : 400,
-                name : 'EmptyEmailOrPassword'
+                code: 400,
+                name: 'EmptyEmailOrPassword'
             }
         }
         const user = await userService.findOne({
@@ -119,26 +136,24 @@ async function signIn(req , res) {
                 name: 'EmailIsNotExist'
             }
         }
-        const isCorectPassword = await bcrypt.compare(password , user.password)
+        const isCorectPassword = await bcrypt.compare(password, user.password)
 
-        if(!isCorectPassword){
+        if (!isCorectPassword) {
             throw {
-                code : 400,
-                name : 'InvalidPassword'
+                code: 400,
+                name: 'InvalidPassword'
             }
         }
-
         const payload = {
             userID: user._id,
             fullName: user.fullName,
             email: user.email,
-            // userPassword: user.password,
         }
 
-        const accessToken = await jwt.sign(payload, config.jwt_secret , {expiresIn: '30d'})
+        const accessToken = await jwt.sign(payload, config.jwt_secret, { expiresIn: '30d' })
         return res.status(200).json({
-            message : 'login succesfully',
-            accessToken : accessToken
+            message: 'login succesfully',
+            accessToken: accessToken
         })
     } catch (error) {
         checkError(error, res)
@@ -149,17 +164,39 @@ async function signIn(req , res) {
 async function findAllUser(req, res) {
     try {
         const users = await userService.findAllUser()
-        //console.log(users);
+
         return res.status(200).json(users);
     } catch (error) {
-        checkError(error,res)
+        checkError(error, res)
+    }
+}
+
+async function findUserOfAgency(req, res) {
+    try {
+        const { user } = req
+        if (!user || user == undefined || user == null) {
+            throw {
+                code: 401,
+                name: 'UnAuthorization'
+            }
+        }
+        const role = await roleService.findOne({ userID: user._id, roleName: 'Manager' })
+
+        console.log("role tk : ", role)
+
+        console.log("agency Id : ", role.agencyID)
+        const staffs = await roleService.findMany({ agencyID: role.agencyID, roleName: 'Staff' })
+
+        console.log("staff : ", staffs)
+        return res.status(200).json(staffs);
+    } catch (error) {
+        checkError(error, res)
     }
 }
 
 async function findOneUser(req, res) {
     try {
         const { userID } = req.params
-        //console.log(staffID)
         const user = await userService.findOne({
             _id: userID
         })
@@ -169,7 +206,7 @@ async function findOneUser(req, res) {
     }
 }
 
-async function deleteUser(req , res) {
+async function deleteUser(req, res) {
     try {
         const { userID } = req.params
         await userService.delete(userID)
@@ -187,5 +224,6 @@ export default {
     deleteUser,
     singUp,
     signIn,
+    findUserOfAgency,
     //signOut
 }

@@ -1,15 +1,15 @@
 import { object } from 'joi'
-import { Schema, model, Types, models , objectId } from 'mongoose'
+import { Schema, model, Types, models, objectId } from 'mongoose'
 
 const userSchema = new Schema({
-    fullName: { 
+    fullName: {
         type: String,
         required: false,
     },
     email: {
         type: String,
         required: true,
-        unique : true
+        unique: true
     },
     password: {
         type: String,
@@ -18,6 +18,10 @@ const userSchema = new Schema({
     phoneNumber: {
         type: String,
         default: null,
-    }
+    },
+    // agencyID: {
+    //     type: Types.objectId,
+    //     ref: 'agencys'
+    // }
 })
-export default  model('users', userSchema)
+export default model('users', userSchema)

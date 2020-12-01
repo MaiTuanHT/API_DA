@@ -48,7 +48,7 @@ class UserService {
         }
     }
 
-    async findAllUser(){
+    async findAllUser() {
         try {
             const users = await UserModel.find()
             return users
@@ -57,10 +57,19 @@ class UserService {
         }
     }
 
-    async checkEmail(email){
+    async findMany(query) {
         try {
-            const user = await UserModel.findOne({email : email});
-            if(!user){
+            const users = await UserModel.find(query)
+            return users
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async checkEmail(email) {
+        try {
+            const user = await UserModel.findOne({ email: email });
+            if (!user) {
                 return false
             }
             return true
@@ -70,7 +79,7 @@ class UserService {
     }
 
 
-    async delete(id){
+    async delete(id) {
         try {
             const user = await UserModel.findById(id)
             if (!staff) {
@@ -79,9 +88,8 @@ class UserService {
                     name: 'UserNotFound'
                 }
             }
-            console.log(user)
-           await UserModel.remove(user)
-           return true
+            await UserModel.remove(user)
+            return true
         } catch (error) {
             throw error
         }

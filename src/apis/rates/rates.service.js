@@ -1,5 +1,5 @@
 import RateModel from './rates.model'
-class RateService{
+class RateService {
     async CreateOne(data) {
         try {
             const newRate = await new RateModel(data)
@@ -10,10 +10,10 @@ class RateService{
         }
     }
 
-    async findMany(query){
+    async findMany(query) {
         try {
             const rates = RateModel.find(query)
-            if(!rates){
+            if (!rates) {
                 throw {
                     code: 404,
                     name: 'NotFoundRate'
@@ -25,11 +25,11 @@ class RateService{
         }
     }
 
-    async findOne(query){
+    async findOne(query) {
         try {
-            const rate = (await RateModel.findOne(query)).populated('agencyID' , 'userID')
-            if(!rate){
-                throw{
+            const rate = (await RateModel.findOne(query)).populated('agencyID', 'userID')
+            if (!rate) {
+                throw {
                     code: 404,
                     name: 'NotFoundRate'
                 }
@@ -40,16 +40,16 @@ class RateService{
         }
     }
 
-    async delete(query){
+    async delete(query) {
         try {
             const rate = RateModel.findOne(query)
-            if(!rate){
-                throw{
+            if (!rate) {
+                throw {
                     code: 404,
                     name: 'NotFoundRate'
                 }
             }
-           
+
             await RateModel.remove(rate)
             return true
         } catch (error) {
@@ -58,24 +58,21 @@ class RateService{
     }
 
 
-    async update(id , data){
-       try {
-           const rate = await RateModel.findById(id)
-           if(!rate){
-               throw{
-                   code: 404,
-                   name: 'NotFoundRate'
-               }
-           }
-           const rateUpdate = await RateModel.save({
-               ...rate,
-               ...data,
-           })
+    async update(id, data) {
+        try {
+            const rate = await RateModel.findById(id)
+            if (!rate) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundRate'
+                }
+            }
+            const rateUpdate = await RateModel.save({ _id: id }, data)
 
-           return rateUpdate
-       } catch (error) {
-           throw error
-       }
+            return rateUpdate
+        } catch (error) {
+            throw error
+        }
     }
 }
 

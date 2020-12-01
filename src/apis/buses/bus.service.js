@@ -1,5 +1,5 @@
 import BusModel from './bus.model'
-class BusService{
+class BusService {
     async CreateOne(data) {
         try {
             const newBus = await new BusModel(data)
@@ -10,10 +10,10 @@ class BusService{
         }
     }
 
-    async findAll(){
+    async findMany(query) {
         try {
-            const buses = BusModel.find().limit(20).populate('routeID')
-            if(!buses){
+            const buses = BusModel.find(query).populate('routeID')
+            if (!buses) {
                 throw {
                     code: 404,
                     name: 'NotFoundBus'
@@ -25,11 +25,11 @@ class BusService{
         }
     }
 
-    async findOne(query){
+    async findOne(query) {
         try {
             const bus = (await BusModel.findOne(query)).populate('routeID')
-            if(!bus){
-                throw{
+            if (!bus) {
+                throw {
                     code: 404,
                     name: 'NotFoundBus'
                 }
@@ -40,16 +40,16 @@ class BusService{
         }
     }
 
-    async delete(query){
+    async delete(query) {
         try {
             const bus = BusModel.findOne(query)
-            if(!bus){
-                throw{
+            if (!bus) {
+                throw {
                     code: 404,
                     name: 'NotFoundBus'
                 }
             }
-           
+
             await BusModel.remove(bus)
             return true
         } catch (error) {
@@ -58,24 +58,21 @@ class BusService{
     }
 
 
-    async update(id , data){
-       try {
-           const bus = await BusModel.findById(id)
-           if(!bus){
-               throw{
-                   code: 404,
-                   name: 'NotFoundBus'
-               }
-           }
-           const busUpdate = await BusModel.save({
-               ...bus,
-               ...data,
-           })
+    async update(id, data) {
+        try {
+            const bus = await BusModel.findById(id)
+            if (!bus) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundBus'
+                }
+            }
+            const busUpdate = await BusModel.save({ _id: id }, data)
 
-           return busUpdate
-       } catch (error) {
-           throw error
-       }
+            return busUpdate
+        } catch (error) {
+            throw error
+        }
     }
 }
 

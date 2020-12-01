@@ -6,14 +6,15 @@ import scheduleController from './schedule.controller'
 
 const router = Router()
 
-router.post('',ScheduleController.createOneSchedule)
+router.post('', authenticate, authorization("Staff"), ScheduleController.createOneSchedule)
 
 router.get('', ScheduleController.findAllSchedule)
+router.get('/agency', authenticate, authorization("Staff"), ScheduleController.findAllScheduleOfAgency)
 router.get('/many/', scheduleController.findAllScheduleForSearch)
 
 router.get('/:agencyID', ScheduleController.findManySchedule)
 
 router.get('/findone/:scheduleID', ScheduleController.findOneSchedule)
-router.delete('/:scheduleID',authenticate, authorization("Staff"),ScheduleController.deleteSchedule)
+router.delete('/:scheduleID', authenticate, authorization("Staff"), ScheduleController.deleteSchedule)
 
 export default router
