@@ -18,14 +18,22 @@ const agencySchema = new Schema({
         type: String,
         required: false
     },
-    scoreRate : {
-        type : Number,
-        default : 5
+    policy: {
+        type: String,
+        required: false
     },
-    totalRate : {
-        type : Number,
+    utilities: {
+        type: String,
+        required: false
+    },
+    scoreRate: {
+        type: Number,
+        default: 0
+    },
+    totalRate: {
+        type: Number,
         default: 0
     }
 })
 
-export default model('agencys' , agencySchema)
+export default model('agencys', agencySchema)
