@@ -25,14 +25,6 @@ async function createOneRoute(req, res) {
         }
 
         const { user } = req
-        if (!user) {
-            throw {
-                code: 401,
-                name: "Unauthorazation"
-            }
-        }
-
-
         const role = await roleService.findOne({ userID: user._id, roleName: "Staff" })
 
         const data = {
@@ -41,6 +33,17 @@ async function createOneRoute(req, res) {
             stopLocation,
         }
 
+        const list_route = await routeService.findAll()
+
+
+        for (let i = 0; i < list_route.length; i++) {
+            if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation) {
+                throw {
+                    code: 400,
+                    name: "Already Exis"
+                }
+            }
+        }
         const newRoute = await routeService.CreateOne(data)
         if (newRoute) {
             const agencyID = newRoute.agencyID
@@ -96,6 +99,38 @@ async function findOneRoute(req, res) {
     }
 }
 
+async function updateRoute(req, res) {
+    try {
+        const { routeID } = req.params
+        const { startLocation, stopLocation } = req.body
+        let data = {}
+        if (startLocation) {
+            data.startLocation = startLocation
+        }
+        if (stopLocation) {
+            data.stopLocation = stopLocation
+        }
+
+        const list_route = await routeService.findAll()
+        for (let i = 0; i < list_route.length; i++) {
+            if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation) {
+                throw {
+                    code: 400,
+                    name: "Already Exis"
+                }
+            }
+        }
+
+        const routeUpdate = await routeService.update(routeID, data)
+
+        console.log(routeUpdate)
+
+        return res.status(200).json(routeUpdate)
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
 async function deleteRoute(req, res) {
     try {
         const { routeID } = req.params
@@ -112,5 +147,6 @@ export default {
     findAllRoute,
     findOneRoute,
     deleteRoute,
-    findAllRouteOfAgency
+    findAllRouteOfAgency,
+    updateRoute
 }

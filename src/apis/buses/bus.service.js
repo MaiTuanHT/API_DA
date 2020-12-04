@@ -57,23 +57,24 @@ class BusService {
         }
     }
 
-
     async update(id, data) {
         try {
             const bus = await BusModel.findById(id)
+            console.log("bus : ", bus)
             if (!bus) {
                 throw {
                     code: 404,
-                    name: 'NotFoundBus'
+                    name: 'NotFoundRoute'
                 }
             }
-            const busUpdate = await BusModel.save({ _id: id }, data)
-
+            const busUpdate = await BusModel.updateOne({ _id: id }, data)
             return busUpdate
         } catch (error) {
             throw error
         }
     }
+
+
 }
 
 export default BusService

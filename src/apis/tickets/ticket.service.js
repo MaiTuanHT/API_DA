@@ -1,6 +1,6 @@
 import TicketModel from './ticket.model'
 
-class TicketService{
+class TicketService {
     async createOne(data) {
         try {
             const newTicket = await new TicketModel(data)
@@ -11,10 +11,10 @@ class TicketService{
         }
     }
 
-    async findAll(){
+    async findAll() {
         try {
             const tickets = TicketModel.find().populate('scheduleID')
-            if(!tickets){
+            if (!tickets) {
                 throw {
                     code: 404,
                     name: 'NotFoundTicket'
@@ -26,26 +26,20 @@ class TicketService{
         }
     }
 
-    async findMany(query){
+    async findMany(query) {
         try {
             const tickets = TicketModel.find(query)
-            if(!tickets){
-                throw {
-                    code: 404,
-                    name: 'NotFoundTicket'
-                }
-            }
             return tickets
         } catch (error) {
             throw error
         }
     }
 
-    async findOne(query){
+    async findOne(query) {
         try {
-            const ticket = (await TicketModel.findOne(query)).populated('userID','scheduleID')
-            if(!ticket){
-                throw{
+            const ticket = await TicketModel.findOne(query).populate('scheduleID')
+            if (!ticket) {
+                throw {
                     code: 404,
                     name: 'NotFoundTicket'
                 }
@@ -56,16 +50,15 @@ class TicketService{
         }
     }
 
-    async delete(query){
+    async delete(query) {
         try {
             const ticket = TicketModel.findOne(query)
-            if(!ticket){
-                throw{
+            if (!ticket) {
+                throw {
                     code: 404,
                     name: 'NotFoundTicket'
                 }
             }
-           
             await TicketModel.remove(ticket)
             return true
         } catch (error) {
@@ -74,24 +67,6 @@ class TicketService{
     }
 
 
-    // async update(id , data){
-    //    try {
-    //        const ticket = await TicketModel.findById(id)
-    //        if(!ticket){
-    //            throw{
-    //                code: 404,
-    //                name: 'NotFoundTicket'
-    //            }
-    //        }
-    //        const ticketUpdate = await TicketModel.save({
-    //            ...ticket,
-    //            ...data,
-    //        })
-    //        return ticketUpdate
-    //    } catch (error) {
-    //        throw error
-    //    }
-    // }
 }
 
 export default TicketService

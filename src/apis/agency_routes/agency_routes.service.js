@@ -1,10 +1,8 @@
 import AgencyRouteModel from './agency_routes.model'
 import error from '../../constants/error'
 import checkIncludeRoute from '../../helpers/checks'
-// import UserService from '../users/user.service'
-// const userService = new UserService()
 
-class AgencyRouteService{
+class AgencyRouteService {
     async CreateOne(data) {
         try {
             const newAgencyRoute = await new AgencyRouteModel(data)
@@ -15,10 +13,10 @@ class AgencyRouteService{
         }
     }
 
-    async findAll(){
+    async findAll() {
         try {
             const agency_routes = await AgencyRouteModel.find().populate('agencyID').populate('routeID').limit(20)
-            if(!agency_routes){
+            if (!agency_routes) {
                 throw {
                     code: 404,
                     name: 'NotFoundAgency'
@@ -46,11 +44,11 @@ class AgencyRouteService{
         }
     }
 
-    async findOne(query){
+    async findOne(query) {
         try {
             const agency_route = await AgencyRouteModel.findOne(query).populate('agencyID')
-            if(!agency_route){
-                throw{
+            if (!agency_route) {
+                throw {
                     code: 404,
                     name: 'NotFoundAgency'
                 }
@@ -76,7 +74,7 @@ class AgencyRouteService{
     //     }
     // }
 
-   
+
 
     // async findMany(query){
     //     try {
@@ -94,25 +92,25 @@ class AgencyRouteService{
     //     }
     // }
 
-    async findMany(query){
+    async findMany(query) {
         try {
             const agency_routes = await AgencyRouteModel.find(query).populate('agencyID').populate('routeID')
-                    if(!agency_routes){
-                        throw{
-                            code: 404,
-                            name: 'NotFoundAgency'
-                        }
-                    }
-                    return agency_routes
+            if (!agency_routes) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundAgency'
+                }
+            }
+            return agency_routes
         } catch (error) {
             throw error
         }
     }
 
-    async groupAgencyOnRoute(){
+    async groupAgencyOnRoute() {
         // try {
         //     const agency_routes = await AgencyRouteModel.find().populate('agencyID').populate('routeID')
-            
+
         //     if(agency_routes){
         //         const groups = []
         //         // const key = agency_routes[0].routeID.starLocation + agency_routes[0].routeID.starLocation;
@@ -126,16 +124,16 @@ class AgencyRouteService{
         // }
     }
 
-    async delete(query){
+    async delete(query) {
         try {
             const agency_route = await AgencyRouteModel.findOne(query)
-            if(!agency_route){
-                throw{
+            if (!agency_route) {
+                throw {
                     code: 404,
                     name: 'NotFoundAgency'
                 }
             }
-           
+
             await AgencyRouteModel.remove(agency_route)
             return true
         } catch (error) {

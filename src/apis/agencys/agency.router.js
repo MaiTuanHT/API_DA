@@ -8,6 +8,7 @@ const router = Router()
 
 router.post('', authenticate, authorization("Client"), AgencyController.createOneAgency)
 router.get('', AgencyController.findAllAgency)
+router.get('/admin', authenticate, authorization("Client"), AgencyController.findAllAgency)
     // router.get('/listAgnecy',AgencyController.findManyAgency)
 router.get('/list', AgencyController.findManyAgencyByRoute)
 router.get('/:route', AgencyController.findManyAgency)

@@ -67,7 +67,7 @@ class RateService {
                     name: 'NotFoundRate'
                 }
             }
-            const rateUpdate = await RateModel.save({ _id: id }, data)
+            const rateUpdate = await RateModel.updateOne({ _id: id }, data)
 
             return rateUpdate
         } catch (error) {

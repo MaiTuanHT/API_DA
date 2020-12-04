@@ -31,7 +31,7 @@ class ScheduleService {
 
     async findMany(query) {
         try {
-            console.log(query)
+
             const schedules = await ScheduleModel.find(query).populate('agencyID').populate('routeID').populate('busID')
             return schedules
         } catch (error) {
@@ -82,7 +82,7 @@ class ScheduleService {
                     name: 'NotFoundSchedule'
                 }
             }
-            const scheduleUpdate = await ScheduleModel.save({ _id: id }, data)
+            const scheduleUpdate = await ScheduleModel.updateOne({ _id: id }, data)
 
             return scheduleUpdate
         } catch (error) {

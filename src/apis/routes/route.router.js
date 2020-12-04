@@ -7,6 +7,7 @@ import routeController from './route.controller'
 const router = Router()
 
 router.post('', authenticate, authorization("Staff"), RouteController.createOneRoute)
+router.put('/:routeID', authenticate, authorization("Staff"), RouteController.updateRoute)
 router.get('', RouteController.findAllRoute)
 router.get('/agency', authenticate, authorization("Staff"), RouteController.findAllRouteOfAgency)
 

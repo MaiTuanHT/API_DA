@@ -15,12 +15,6 @@ class RouteService {
     async findManyRouteOfAgency(query) {
         try {
             const agencys = await RouteModel.find(query).populate('agencyID')
-                // if (!agencys) {
-                //     throw {
-                //         code: 404,
-                //         name: 'NotFoundAgency'
-                //     }
-                // }
             return agencys
         } catch (error) {
             throw error
@@ -84,8 +78,11 @@ class RouteService {
                     name: 'NotFoundRoute'
                 }
             }
-            const routeUpdate = await RouteModel.save({ _id: id }, data)
 
+            console.log(route)
+            const routeUpdate = await RouteModel.updateOne({ _id: id }, data)
+
+            console.log(routeUpdate)
             return routeUpdate
         } catch (error) {
             throw error

@@ -15,9 +15,6 @@ async function createOneBus(req, res) {
     try {
 
         const { routeID, departureTime, seat } = req.body
-
-        // const data = req.body;
-        // console.log(data)
         if (!routeID || routeID == undefined ||
             !departureTime || departureTime == undefined ||
             !seat || seat == undefined) {
@@ -26,18 +23,18 @@ async function createOneBus(req, res) {
                 name: 'ErrorEmpty'
             }
         }
-
-        // const routeID = data.routeID;
-
         const { user } = req
-        if (!user) {
-            throw {
-                code: 401,
-                name: "Unauthorazation"
+
+        const list_bus = await busService.findMany({})
+
+        for (var i = 0; i < list_bus.length; i++) {
+            if (list_bus[i].routeID == routeID && list_bus[i].departureTime == departureTime) {
+                throw {
+                    code: 400,
+                    name: 'Already Exis'
+                }
             }
         }
-
-
         const role = await roleService.findOne({ userID: user._id, roleName: "Staff" })
 
         const bus = {
@@ -46,7 +43,6 @@ async function createOneBus(req, res) {
             departureTime,
             seat,
         }
-        console.log(bus)
         const newbus = await busService.CreateOne(bus)
         return res.status(201).json(newbus)
     } catch (error) {
@@ -107,10 +103,46 @@ async function deleteBus(req, res) {
 }
 
 
+async function updateBus(req, res) {
+    try {
+        const { busID } = req.params
+        console.log("bus id : ", busID)
+        const { departureTime, seat, routeID } = req.body
+        let data = {}
+        if (departureTime) {
+            data.departureTime = departureTime
+        }
+        if (seat) {
+            data.seat = seat
+        }
+
+        if (routeID) {
+            data.routeID = routeID
+        }
+
+        const list_bus = await busService.findMany({})
+
+        for (var i = 0; i < list_bus.length; i++) {
+            if (list_bus[i].routeID == routeID && list_bus[i].departureTime == departureTime) {
+                throw {
+                    code: 400,
+                    name: 'Already Exis'
+                }
+            }
+        }
+        const busUpdate = await busService.update(busID, data)
+        return res.status(200).json(busUpdate)
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
+
 export default {
     createOneBus,
     findAllBus,
     findOneBus,
+    updateBus,
     deleteBus,
     findAllBusOfAgency
 }

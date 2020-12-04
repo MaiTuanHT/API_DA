@@ -6,21 +6,25 @@ const scheduleSchema = new Schema({
         type: String,
         required: true,
     },
-    busID:{
+    busID: {
         type: Types.ObjectId,
         required: true,
         ref: 'buses'
     },
-    agencyID:{
+    agencyID: {
         type: Types.ObjectId,
-        required : true,
-        ref : 'agencys'
+        required: true,
+        ref: 'agencys'
     },
-    routeID:{
+    routeID: {
         type: Types.ObjectId,
         required: true,
         ref: 'routes'
+    },
+    booked: {
+        type: Number,
+        default: 0
     }
 })
 
-export default model('schedules' , scheduleSchema)
+export default model('schedules', scheduleSchema)
