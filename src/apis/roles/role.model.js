@@ -1,5 +1,5 @@
 import { object, string } from 'joi'
-import { Schema, model, Types, models , objectId } from 'mongoose'
+import { Schema, model, Types, models, objectId } from 'mongoose'
 
 const roleSchema = new Schema({
     userID: {
@@ -7,18 +7,13 @@ const roleSchema = new Schema({
         ref: 'users',
         require: true
     },
-    agencyID:{
+    agencyID: {
         type: Types.ObjectId,
         ref: 'agencys'
     },
-    roleName: { 
+    roleName: {
         type: String,
         required: true,
     },
-    // status: {
-    //     type: String,
-    //     required: true,
-    //     default: 'ACTIVE'
-    // }
 })
-export default  model('roles', roleSchema)
+export default model('roles', roleSchema)

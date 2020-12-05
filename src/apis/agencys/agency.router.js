@@ -7,6 +7,8 @@ import agencyController from './agency.controller'
 const router = Router()
 
 router.post('', authenticate, authorization("Client"), AgencyController.createOneAgency)
+router.delete('/:agencyID', authenticate, authorization("Client"), AgencyController.deleteAgency)
+
 router.get('', AgencyController.findAllAgency)
 router.get('/admin', authenticate, authorization("Client"), AgencyController.findAllAgency)
     // router.get('/listAgnecy',AgencyController.findManyAgency)

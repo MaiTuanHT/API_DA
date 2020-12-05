@@ -39,21 +39,19 @@ class RoleService {
     async findMany(query) {
         try {
             const roles = await RoleModel.find(query).populate('userID')
-            if (!roles) {
-                throw {
-                    code: 404,
-                    name: 'RoleNotFound'
-                }
-            }
             return roles
         } catch (error) {
             throw error
         }
     }
-    async delete(id) {
+    async delete(query) {
         try {
-            const role = await UserModel.findById(id)
-            if (!staff) {
+            console.log("Vao delete role roi    ")
+            const role = await RoleModel.findOne(query)
+
+            console.log(role)
+
+            if (!role) {
                 throw {
                     code: 404,
                     name: 'RoleNotFound'
@@ -61,6 +59,14 @@ class RoleService {
             }
             await RoleModel.remove(role)
             return true
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteMany(query) {
+        try {
+            await RoleModel.deleteMany(query)
         } catch (error) {
             throw error
         }

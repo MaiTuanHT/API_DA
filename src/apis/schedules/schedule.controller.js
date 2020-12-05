@@ -12,8 +12,8 @@ const busService = new BusService()
 
 async function createOneSchedule(req, res) {
     try {
-        const { busID, date } = req.body
-        if (!busID || busID == "" || !date || date == "") {
+        const { busID, date, price, vehicleID } = req.body
+        if (!busID || busID == "" || !date || date == "" || !price || price == 0) {
             throw {
                 code: 400,
                 name: 'ErrorEmpty'
@@ -31,11 +31,15 @@ async function createOneSchedule(req, res) {
         }
 
         const bus = await busService.findOne({ _id: busID })
-        const schedule = {
+        let schedule = {
             busID: busID,
             agencyID: bus.agencyID,
             routeID: bus.routeID,
-            date: date
+            date: date,
+            price
+        }
+        if (vehicleID) {
+            schedule.vehicleID = vehicleID
         }
         const newSchedule = await scheduleService.CreateOne(schedule)
         return res.status(201).json(newSchedule)
@@ -115,7 +119,6 @@ async function findAllScheduleOfAgency(req, res) {
         const role = await roleService.findOne({ userID: user._id, roleName: "Staff" })
 
         console.log(role)
-            // const agencyID = req.query
         const routes = await scheduleService.findMany({ agencyID: role.agencyID })
         return res.status(200).json(routes);
     } catch (error) {
@@ -144,13 +147,20 @@ async function findOneSchedule(req, res) {
 async function updateSchedule(req, res) {
     try {
         const { scheduleID } = req.params
-        const { busID, date } = req.body
+        const { busID, date, price, vehicleID } = req.body
         let data = {}
         if (busID) {
             data.busID = busID
         }
         if (date) {
             data.date = date
+        }
+        if (price) {
+            data.price = price
+        }
+
+        if (vehicleID) {
+            data.vehicleID = vehicleID
         }
 
         const list_schedule = await scheduleService.findMany({})
@@ -174,6 +184,9 @@ async function updateSchedule(req, res) {
 async function deleteSchedule(req, res) {
     try {
         const { scheduleID } = req.params
+
+        console.log("schedule id : ", scheduleID)
+
         await scheduleService.delete({ _id: scheduleID })
         return res.status(200).json(true)
     } catch (error) {

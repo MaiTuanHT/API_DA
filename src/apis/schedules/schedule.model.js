@@ -1,4 +1,4 @@
-import { date } from 'joi'
+import { date, number } from 'joi'
 import mongose, { model, Schema, Types } from 'mongoose'
 
 const scheduleSchema = new Schema({
@@ -24,6 +24,15 @@ const scheduleSchema = new Schema({
     booked: {
         type: Number,
         default: 0
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    vehicleID: {
+        type: Types.ObjectId,
+        ref: 'vehicles',
+        require: false
     }
 })
 

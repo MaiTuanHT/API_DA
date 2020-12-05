@@ -57,6 +57,15 @@ class BusService {
         }
     }
 
+    async deleteMany(query) {
+        try {
+            await BusModel.deleteMany(query)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
     async update(id, data) {
         try {
             const bus = await BusModel.findById(id)

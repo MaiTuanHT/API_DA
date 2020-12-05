@@ -14,11 +14,7 @@ const vehicleSchema = new Schema({
     numberSeat: {
         type: Number,
         required: true,
-    },
-    priceTicket: {
-        type: Number,
-        required: true
     }
 })
 
-export default model('vehicles' , vehicleSchema)
+export default model('vehicles', vehicleSchema)

@@ -4,13 +4,16 @@ import authenticate from '../../middlewares/authentication/jwt.strategy'
 import authorization from '../../middlewares/authentication/authorization'
 import cors from 'cors'
 import userController from './user.controller'
+import UserService from './user.service'
 const router = Router()
 
 router.post('', authenticate, authorization("Manager"), UserController.createOneUser)
+
+router.delete('/:userID', authenticate, authorization("Manager"), UserController.deleteUser)
+
 router.post('/register', UserController.singUp)
 router.post('/logIn', cors(), UserController.signIn)
-    // router.get('/logout' , userController.signOut)
-    // router.get('', authenticate, authorization('Manager'), UserController.findAllUser)
+
 
 router.get('/list-staff', authenticate, authorization('Manager'), UserController.findUserOfAgency)
 

@@ -5,10 +5,10 @@ import authorization from '../../middlewares/authentication/authorization'
 
 const router = Router()
 
-router.post('', RateController.createOneRate)
-router.get('',  RateController.findAllRate)
+router.post('', authenticate, authorization("Client"), RateController.createOneRate)
+router.get('', RateController.findAllRate)
 router.get('/agency/', RateController.rateAgency)
 router.get('/:rateID', RateController.findOneRate)
-router.delete('/:rateID',RateController.deleteRate)
+router.delete('/:rateID', RateController.deleteRate)
 
 export default router

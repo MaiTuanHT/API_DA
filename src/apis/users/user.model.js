@@ -19,9 +19,8 @@ const userSchema = new Schema({
         type: String,
         default: null,
     },
-    // agencyID: {
-    //     type: Types.objectId,
-    //     ref: 'agencys'
-    // }
+    agencyID: {
+        type: String
+    }
 })
 export default model('users', userSchema)

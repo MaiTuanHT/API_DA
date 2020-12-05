@@ -4,11 +4,13 @@ import RouteService from '../routes/route.service'
 import checkError from '../../helpers/checkError'
 // import RoleService from '../roles/role.service'
 import RoleService from '../roles/role.service'
+import ScheduleService from '../schedules/schedule.service'
 
 const roleService = new RoleService()
 
 const busService = new BusService()
 const routeService = new RouteService()
+const scheduleServie = new ScheduleService()
 
 
 async function createOneBus(req, res) {
@@ -95,7 +97,9 @@ async function findOneBus(req, res) {
 async function deleteBus(req, res) {
     try {
         const { busID } = req.params
+        console.log("bus ID : ", busID)
         await busService.delete({ _id: busID })
+        await scheduleServie.deleteMany({ busID: busID })
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)

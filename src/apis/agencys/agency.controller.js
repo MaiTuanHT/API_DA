@@ -5,11 +5,19 @@ import roleControler from '../roles/role.controller'
 import RouteService from '../routes/route.service'
 import RoleService from '../roles/role.service'
 import { query } from 'express-validator'
+import AgencyRouteService from '../agency_routes/agency_routes.service'
+import UserService from '../users/user.service'
+import VehicleService from '../vehicles/vehicle.service'
 
 
 const agencyService = new AgencyService()
 const routeService = new RouteService()
+const agencyRouteService = new AgencyRouteService()
 
+const userService = new UserService()
+const roleService = new RoleService()
+
+const vehicleService = new VehicleService()
 
 async function createOneAgency(req, res) {
     try {
@@ -57,8 +65,11 @@ async function createOneAgency(req, res) {
             }
             roleControler.createOneRole(roleM, res)
             roleControler.createOneRole(roleS, res)
+
+            const userUpdate = await userService.update(userID, { agencyID: newAgency._id })
+
+            return res.status(201).json(newAgency)
         }
-        return res.status(201).json(newAgency)
     } catch (error) {
         checkError(error, res)
     }
@@ -89,7 +100,15 @@ async function findOneAgency(req, res) {
 async function deleteAgency(req, res) {
     try {
         const { agencyID } = req.params
+        const agency = await agencyService.findOne({ _id: agencyID });
+        const userID = agency.author._id;
         await agencyService.delete({ _id: agencyID })
+        await agencyRouteService.deleteMany({ agencyID })
+        await userService.deleteMany({ agencyID })
+        await roleService.deleteMany({ agencyID })
+        await roleService.delete({ userID })
+        await vehicleService.deleteMany({ agencyID })
+
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)

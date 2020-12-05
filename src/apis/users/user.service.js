@@ -13,25 +13,21 @@ class UserService {
         }
     }
 
-    // async update(id,data){
-    //     try {
-    //         const staff = await StaffModel.findById(id)
-    //         if (!staff) {
-    //             throw {
-    //                 code: 404,
-    //                 name: 'StaffNotFound'
-    //             }
-    //         }
-    //         const staffUpdate = await StaffModel.save({
-    //             ...staff,
-    //             ...data,
-    //         })
-
-    //         return staffUpdate
-    //     } catch (error) {
-    //         throw error
-    //     }
-    // }
+    async update(id, data) {
+        try {
+            const staff = await UserModel.findById(id)
+            if (!staff) {
+                throw {
+                    code: 404,
+                    name: 'StaffNotFound'
+                }
+            }
+            const staffUpdate = await UserModel.updateOne({ _id: id }, data)
+            return staffUpdate
+        } catch (error) {
+            throw error
+        }
+    }
 
     async findOne(query) {
         try {
@@ -82,7 +78,7 @@ class UserService {
     async delete(id) {
         try {
             const user = await UserModel.findById(id)
-            if (!staff) {
+            if (!user) {
                 throw {
                     code: 404,
                     name: 'UserNotFound'
@@ -94,6 +90,16 @@ class UserService {
             throw error
         }
     }
+
+    async deleteMany(query) {
+        try {
+            await UserModel.deleteMany(query)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
 }
 
 export default UserService

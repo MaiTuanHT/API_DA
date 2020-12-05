@@ -2,14 +2,17 @@ import RouteService from './route.service'
 import AgencyRouteService from '../agency_routes/agency_routes.service'
 
 import checkError from '../../helpers/checkError'
-import AgencyRoute from '../agency_routes/agency_routes.controller'
+// import AgencyRoute from '../agency_routes/agency_routes.controller'
 
 import RoleService from '../roles/role.service'
-
+import BusService from '../buses/bus.service'
+import ScheduleService from '../schedules/schedule.service'
 
 const roleService = new RoleService()
 const routeService = new RouteService()
 const agencyRouteService = new AgencyRouteService()
+const busService = new BusService()
+const scheduleService = new ScheduleService()
 
 
 async function createOneRoute(req, res) {
@@ -48,10 +51,14 @@ async function createOneRoute(req, res) {
         if (newRoute) {
             const agencyID = newRoute.agencyID
             const routeID = newRoute._id
-            const agency_route = { agencyID, routeID }
-            AgencyRoute.createOneAgencyRoute(agency_route, req, res)
+
+            const dataAgencyRoute = {
+                agencyID,
+                routeID
+            }
+            const newAgencyRoute = await agencyRouteService.CreateOne(dataAgencyRoute)
+            return res.status(201).json(newRoute)
         }
-        return res.status(201).json(newRoute)
     } catch (error) {
         checkError(error, res)
     }
@@ -120,10 +127,7 @@ async function updateRoute(req, res) {
                 }
             }
         }
-
         const routeUpdate = await routeService.update(routeID, data)
-
-        console.log(routeUpdate)
 
         return res.status(200).json(routeUpdate)
     } catch (error) {
@@ -135,12 +139,14 @@ async function deleteRoute(req, res) {
     try {
         const { routeID } = req.params
         await routeService.delete({ _id: routeID })
+        await busService.deleteMany({ routeID })
+        await scheduleService.deleteMany({ routeID })
+        await agencyRouteService.delete({ routeID })
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)
     }
 }
-
 
 export default {
     createOneRoute,

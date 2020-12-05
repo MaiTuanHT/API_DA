@@ -27,7 +27,7 @@ class RateService {
 
     async findOne(query) {
         try {
-            const rate = (await RateModel.findOne(query)).populated('agencyID', 'userID')
+            const rate = await RateModel.findOne(query).populate('agencyID').populate('userID')
             if (!rate) {
                 throw {
                     code: 404,

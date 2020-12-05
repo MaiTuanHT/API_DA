@@ -60,8 +60,16 @@ class RouteService {
                     name: 'NotFoundRoute'
                 }
             }
-
             await RouteModel.remove(route)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteMany(query) {
+        try {
+            await RouteModel.deleteMany(query)
             return true
         } catch (error) {
             throw error
@@ -79,10 +87,8 @@ class RouteService {
                 }
             }
 
-            console.log(route)
             const routeUpdate = await RouteModel.updateOne({ _id: id }, data)
 
-            console.log(routeUpdate)
             return routeUpdate
         } catch (error) {
             throw error

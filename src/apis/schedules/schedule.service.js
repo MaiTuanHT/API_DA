@@ -32,7 +32,7 @@ class ScheduleService {
     async findMany(query) {
         try {
 
-            const schedules = await ScheduleModel.find(query).populate('agencyID').populate('routeID').populate('busID')
+            const schedules = await ScheduleModel.find(query).populate('agencyID').populate('routeID').populate('busID').populate('vehicleID')
             return schedules
         } catch (error) {
             throw error
@@ -64,8 +64,16 @@ class ScheduleService {
                     name: 'NotFoundSchedule'
                 }
             }
-
             await ScheduleModel.remove(schedule)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteMany(query) {
+        try {
+            await ScheduleModel.deleteMany(query)
             return true
         } catch (error) {
             throw error

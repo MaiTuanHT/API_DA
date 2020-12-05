@@ -49,7 +49,8 @@ async function createOneUser(req, res) {
             fullName: fullName,
             email: email,
             password: hash,
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            agencyID: role.agencyID
         }
 
         const newUser = await userService.createOne(data)
@@ -174,20 +175,10 @@ async function findAllUser(req, res) {
 async function findUserOfAgency(req, res) {
     try {
         const { user } = req
-        if (!user || user == undefined || user == null) {
-            throw {
-                code: 401,
-                name: 'UnAuthorization'
-            }
-        }
         const role = await roleService.findOne({ userID: user._id, roleName: 'Manager' })
 
-        console.log("role tk : ", role)
-
-        console.log("agency Id : ", role.agencyID)
-        const staffs = await roleService.findMany({ agencyID: role.agencyID, roleName: 'Staff' })
-
-        console.log("staff : ", staffs)
+        const staffs = await userService.findMany({ agencyID: role.agencyID })
+        console.log(staffs)
         return res.status(200).json(staffs);
     } catch (error) {
         checkError(error, res)
@@ -209,13 +200,29 @@ async function findOneUser(req, res) {
 async function deleteUser(req, res) {
     try {
         const { userID } = req.params
-        await userService.delete(userID)
-        return res.status(200).json(true)
+        const roles = await roleService.findMany({ userID })
+        let checkManager = false
+        roles.forEach(role => {
+            if (role.roleName == "Manager") {
+                checkManager = true
+            }
+        });
+
+        if (checkManager) {
+            throw {
+                code: 400,
+                name: "Không được xóa Manager"
+            }
+        } else {
+            console.log("vao dell")
+            await userService.delete({ _id: userID })
+            await roleService.delete({ userID })
+            return res.status(200).json(true)
+        }
     } catch (error) {
         checkError(error, res)
     }
 }
-
 
 export default {
     createOneUser,

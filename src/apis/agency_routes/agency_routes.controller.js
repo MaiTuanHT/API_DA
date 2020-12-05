@@ -13,8 +13,6 @@ const agency_route_Service = new AgencyRouteService()
 
 async function createOneAgencyRoute(agency_route, req, res) {
     try {
-        // const data = req.body;
-        // console.log(data)
         if (!agency_route || agency_route == undefined) {
             throw {
                 code: 400,
@@ -61,35 +59,6 @@ async function deleteAgencyRoute(req, res) {
     }
 }
 
-// async function findManyAgencyByRoute(req , res) {
-//     try {
-//         const { startLocation, stopLocation } = req.query
-//         console.log("request.query : " + req.query)
-//         console.log("startLocation : " + startLocation)
-
-//         const agencys = await routeService.findManyAgency({
-//             startLocation,
-//             stopLocation,
-//         })
-//         return res.status(200).json(agencys)
-//     } catch (error) {
-//         checkError(error , res)
-//     }
-// }
-
-
-// async function findManyAgency(req , res) {
-//     try {
-//         const {route} = req.params
-//         const agencys = await agencyService.findOne({
-//             startLocation: route.startLocation,
-//             stopLocation: route.stopLocation
-//         })
-//         return res.status(200).json(agencys)
-//     } catch (error) {
-//         checkError(error, res)
-//     }
-// }
 
 export default {
     createOneAgencyRoute,

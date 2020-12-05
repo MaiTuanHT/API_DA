@@ -3,7 +3,7 @@ import error from '../../constants/error'
 import UserService from '../users/user.service'
 const userService = new UserService()
 
-class AgencyService{
+class AgencyService {
     async CreateOne(data) {
         try {
             const newAgency = await new AgencyModel(data)
@@ -14,10 +14,10 @@ class AgencyService{
         }
     }
 
-    async findAll(){
+    async findAll() {
         try {
             const agencys = AgencyModel.find().populate('author').limit(20)
-            if(!agencys){
+            if (!agencys) {
                 throw {
                     code: 404,
                     name: 'NotFoundAgency'
@@ -29,18 +29,15 @@ class AgencyService{
         }
     }
 
-    async findOne(query){
+    async findOne(query) {
         try {
             const agency = await AgencyModel.findOne(query).populate('author')
-            if(!agency){
-                throw{
+            if (!agency) {
+                throw {
                     code: 404,
                     name: 'NotFoundAgency'
                 }
             }
-
-
-
             return agency
         } catch (error) {
             throw error
@@ -63,31 +60,31 @@ class AgencyService{
     //     }
     // }
 
-    async findMany(query){
+    async findMany(query) {
         try {
             const agencys = await AgencyModel.find(query)
-                    if(!agency){
-                        throw{
-                            code: 404,
-                            name: 'NotFoundAgency'
-                        }
-                    }
-                    return agencys
+            if (!agency) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundAgency'
+                }
+            }
+            return agencys
         } catch (error) {
             throw error
         }
     }
 
-    async delete(query){
+    async delete(query) {
         try {
             const agency = AgencyModel.findOne(query)
-            if(!agency){
-                throw{
+            if (!agency) {
+                throw {
                     code: 404,
                     name: 'NotFoundAgency'
                 }
             }
-           
+
             await AgencyModel.remove(agency)
             return true
         } catch (error) {
@@ -96,24 +93,24 @@ class AgencyService{
     }
 
 
-    async update(id , data){
-       try {
-           const agency = await AgencyModel.findById(id)
-           if(!agency){
-               throw{
-                   code: 404,
-                   name: 'NotFoundAgency'
-               }
-           }
+    async update(id, data) {
+        try {
+            const agency = await AgencyModel.findById(id)
+            if (!agency) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundAgency'
+                }
+            }
 
-           console.log(agency)
+            console.log(agency)
 
-           const agencyUpdate = await AgencyModel.updateOne({ _id: id }, data)
+            const agencyUpdate = await AgencyModel.updateOne({ _id: id }, data)
 
-           return agencyUpdate
-       } catch (error) {
-           throw error
-       }
+            return agencyUpdate
+        } catch (error) {
+            throw error
+        }
     }
 }
 

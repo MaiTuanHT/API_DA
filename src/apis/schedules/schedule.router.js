@@ -9,6 +9,8 @@ const router = Router()
 router.post('', authenticate, authorization("Staff"), ScheduleController.createOneSchedule)
 router.put('/:scheduleID', authenticate, authorization("Staff"), ScheduleController.updateSchedule)
 
+router.delete('/:scheduleID', authenticate, authorization("Staff"), ScheduleController.deleteSchedule)
+
 router.get('', ScheduleController.findAllSchedule)
 router.get('/agency', authenticate, authorization("Staff"), ScheduleController.findAllScheduleOfAgency)
 router.get('/many/', scheduleController.findAllScheduleForSearch)
