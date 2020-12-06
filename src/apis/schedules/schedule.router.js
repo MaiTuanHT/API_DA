@@ -19,7 +19,8 @@ router.get('/agency-route/:agencyID/:startLocation/:stopLocation', scheduleContr
 
 router.get('/:agencyID', ScheduleController.findManySchedule)
 
-router.get('/findone/:scheduleID', authenticate, authorization("Staff"), ScheduleController.findOneSchedule)
+router.get('/findone/:scheduleID', authenticate, authorization("Staff"), ScheduleController.findOneSchedule),
+    router.get('/findSchedule/:scheduleID', authenticate, authorization("Client"), ScheduleController.findOneSchedule)
 router.delete('/:scheduleID', authenticate, authorization("Staff"), ScheduleController.deleteSchedule)
 
 export default router

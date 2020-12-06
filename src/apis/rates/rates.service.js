@@ -49,7 +49,6 @@ class RateService {
                     name: 'NotFoundRate'
                 }
             }
-
             await RateModel.remove(rate)
             return true
         } catch (error) {

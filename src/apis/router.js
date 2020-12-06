@@ -13,16 +13,14 @@ import Router from 'express'
 const api = Router()
 
 api.use('/users/', UserRouter)
-api.use('/agencys/' , AgencyRouter)
-api.use('/routes/' , RouteRouter)
-api.use('/buses/' , BusRouter)
-api.use('/vehicles/' , VehicleRouter)
-api.use('/tickets/' , TicketRouter)
-api.use('/rates/' , RateRouter)
+api.use('/agencys/', AgencyRouter)
+api.use('/routes/', RouteRouter)
+api.use('/buses/', BusRouter)
+api.use('/vehicles/', VehicleRouter)
+api.use('/tickets/', TicketRouter)
+api.use('/rates/', RateRouter)
 api.use('/schedules/', ScheduleRouter)
-// api.use('/scheduleAgency/' , ScheduleAgencyRouter)
 api.use('/agency_route/', AgencyRouteRouter)
 
 
 export default api
-

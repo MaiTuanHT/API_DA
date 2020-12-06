@@ -40,7 +40,8 @@ async function createOneRoute(req, res) {
 
 
         for (let i = 0; i < list_route.length; i++) {
-            if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation) {
+            if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation &&
+                role.agencyID == list_route[i].agencyID) {
                 throw {
                     code: 400,
                     name: "Already Exis"

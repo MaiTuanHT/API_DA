@@ -44,22 +44,6 @@ class AgencyService {
         }
     }
 
-    // async findMany(query){
-    //     try {
-    //         const agencys = await AgencyModel.find(query)
-    //         if(!agency){
-    //             throw{
-    //                 code: 404,
-    //                 name: 'NotFoundAgency'
-    //             }
-    //         }
-
-    //         return agencys
-    //     } catch (error) {
-    //         throw error
-    //     }
-    // }
-
     async findMany(query) {
         try {
             const agencys = await AgencyModel.find(query)

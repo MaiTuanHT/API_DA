@@ -15,7 +15,7 @@ const scheduleServie = new ScheduleService()
 
 async function createOneBus(req, res) {
     try {
-
+        console.log("vao day")
         const { routeID, departureTime, seat } = req.body
         if (!routeID || routeID == undefined ||
             !departureTime || departureTime == undefined ||
@@ -29,8 +29,11 @@ async function createOneBus(req, res) {
 
         const list_bus = await busService.findMany({})
 
+        console.log("list bus : ", list_bus)
+
         for (var i = 0; i < list_bus.length; i++) {
-            if (list_bus[i].routeID == routeID && list_bus[i].departureTime == departureTime) {
+            if (list_bus[i].routeID._id == routeID && list_bus[i].departureTime == departureTime) {
+
                 throw {
                     code: 400,
                     name: 'Already Exis'
@@ -73,8 +76,6 @@ async function findAllBusOfAgency(req, res) {
         }
         const role = await roleService.findOne({ userID: user._id, roleName: "Staff" })
 
-        console.log(role)
-            // const agencyID = req.query
         const buses = await busService.findMany({ agencyID: role.agencyID })
         return res.status(200).json(buses);
     } catch (error) {

@@ -16,7 +16,7 @@ class ScheduleService {
 
     async findAll() {
         try {
-            const schedules = ScheduleModel.find().limit(20).populate('vehicleID', 'busID')
+            const schedules = ScheduleModel.find().limit(20).populate('vehicleID')
             if (!schedules) {
                 throw {
                     code: 404,

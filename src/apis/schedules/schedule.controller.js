@@ -20,9 +20,20 @@ async function createOneSchedule(req, res) {
             }
         }
 
+
+
         const list_schedule = await scheduleService.findMany({})
+
         for (var i = 0; i < list_schedule.length; i++) {
-            if (list_schedule[i].busID == busID && list_schedule[i].date == date) {
+
+            console.log("list id : ", list_schedule[i].busID)
+            console.log("id : ", busID)
+
+
+            console.log("date list : ", list_schedule[i].date)
+            console.log("date : ", date)
+
+            if (list_schedule[i].busID._id == busID && list_schedule[i].date == date) {
                 throw {
                     code: 400,
                     name: 'Already Exis'
@@ -129,7 +140,7 @@ async function findAllScheduleOfAgency(req, res) {
 
 async function findOneSchedule(req, res) {
     try {
-        console.log("da vao day")
+        console.log("da vao laylich trinh ")
         const { scheduleID } = req.params
         console.log("schedule ID : ", scheduleID)
         const schedule = await scheduleService.findOne({

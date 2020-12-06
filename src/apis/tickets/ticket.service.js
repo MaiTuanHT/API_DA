@@ -13,13 +13,19 @@ class TicketService {
 
     async findAll() {
         try {
-            const tickets = TicketModel.find().populate('scheduleID')
-            if (!tickets) {
-                throw {
-                    code: 404,
-                    name: 'NotFoundTicket'
+            const tickets = TicketModel.find().populate({
+                path: 'scheduleID',
+                populate: {
+                    path: 'routeID',
+                    model: 'routes'
                 }
-            }
+            }).populate({
+                path: 'scheduleID',
+                populate: {
+                    path: 'busID',
+                    model: 'buses'
+                }
+            })
             return tickets
         } catch (error) {
             throw error
@@ -28,7 +34,19 @@ class TicketService {
 
     async findMany(query) {
         try {
-            const tickets = TicketModel.find(query)
+            const tickets = TicketModel.find(query).populate({
+                path: 'scheduleID',
+                populate: {
+                    path: 'routeID',
+                    model: 'routes'
+                }
+            }).populate({
+                path: 'scheduleID',
+                populate: {
+                    path: 'busID',
+                    model: 'buses'
+                }
+            })
             return tickets
         } catch (error) {
             throw error

@@ -14,7 +14,6 @@ const agencyService = new AgencyService()
 
 async function createOneRate(req, res) {
     try {
-        console.log("vao day roi")
         const { quality, service, agencyID, userID } = req.body;
         if (!quality || quality == undefined || !service || service == undefined ||
             !agencyID || agencyID == undefined || !userID || userID == undefined) {
@@ -23,9 +22,7 @@ async function createOneRate(req, res) {
                 name: 'ErrorEmpty'
             }
         }
-
         const listRate = await rateService.findMany({})
-
         let checkRate = false;
         for (var i = 0; i < listRate.length; i++) {
             if (listRate[i].agencyID == agencyID && listRate[i].userID == userID) {
@@ -33,19 +30,14 @@ async function createOneRate(req, res) {
                 break
             }
         }
-
         if (checkRate) {
-            console.log("vao if")
             const dataUpdate = {
                 quality,
                 service,
                 medium: (service + quality) / 2
             }
-
             const rateUpdate = await rateService.update(checkRate._id, dataUpdate)
-
             const agency = await agencyService.findOne({ _id: agencyID })
-
             const dataAgency = {
                 scoreRate: (agency.scoreRate * agency.totalRate + rateUpdate.medium - checkRate.medium) / agency.totalRate
             }

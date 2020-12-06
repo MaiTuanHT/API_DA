@@ -10,6 +10,7 @@ const router = Router()
 router.post('', authenticate, authorization("Manager"), UserController.createOneUser)
 
 router.delete('/:userID', authenticate, authorization("Manager"), UserController.deleteUser)
+router.delete('/admin/:userID', authenticate, authorization('Admin'), UserController.deleteUser)
 
 router.post('/register', UserController.singUp)
 router.post('/logIn', cors(), UserController.signIn)
@@ -17,10 +18,9 @@ router.post('/logIn', cors(), UserController.signIn)
 
 router.get('/list-staff', authenticate, authorization('Manager'), UserController.findUserOfAgency)
 
-// router.get('', UserController.findAllUser)
+router.get('/client', authenticate, authorization('Admin'), UserController.findAllClient)
 
-// router.get('/users', authenticate, authorization('Manager') ,UserController.findAllUser)
 router.get('/:userID', UserController.findOneUser)
-router.delete('/:userID', UserController.deleteUser)
+
 
 export default router

@@ -10,6 +10,26 @@ import RoleService from '../roles/role.service'
 const userService = new UserService()
 const roleService = new RoleService()
 
+async function createAdmin(req, param) {
+
+    const password = '111111'
+    const hash = bcrypt.hashSync(password, 10)
+
+    const admin = {
+        fullName: 'ADMIN',
+        email: 'admin@gmail.com',
+        phoneNumber: '0348721777',
+        password: hash
+    }
+
+    const newUser = await userService.createOne(admin)
+    const userID = newUser._id
+    const roleName = 'Admin'
+    const newrole = { userID, roleName }
+    const role = await roleService.createOne(newrole)
+    return res.status(201).json(newUser)
+}
+
 async function createOneUser(req, res) {
     try {
         const { user } = req
@@ -172,6 +192,15 @@ async function findAllUser(req, res) {
     }
 }
 
+async function findAllClient(req, res) {
+    try {
+        const clients = await userService.findMany({ agencyID: undefined })
+        return res.status(200).json(clients);
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
 async function findUserOfAgency(req, res) {
     try {
         const { user } = req
@@ -232,5 +261,7 @@ export default {
     singUp,
     signIn,
     findUserOfAgency,
+    findAllClient,
+    createAdmin
     //signOut
 }

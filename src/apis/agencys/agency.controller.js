@@ -8,6 +8,8 @@ import { query } from 'express-validator'
 import AgencyRouteService from '../agency_routes/agency_routes.service'
 import UserService from '../users/user.service'
 import VehicleService from '../vehicles/vehicle.service'
+import BusService from '../buses/bus.service'
+import ScheduleService from '../schedules/schedule.service'
 
 
 const agencyService = new AgencyService()
@@ -18,6 +20,8 @@ const userService = new UserService()
 const roleService = new RoleService()
 
 const vehicleService = new VehicleService()
+const busService = new BusService()
+const scheduleService = new ScheduleService()
 
 async function createOneAgency(req, res) {
     try {
@@ -108,6 +112,9 @@ async function deleteAgency(req, res) {
         await roleService.deleteMany({ agencyID })
         await roleService.delete({ userID })
         await vehicleService.deleteMany({ agencyID })
+        await routeService.deleteMany({ agencyID })
+        await busService.deleteMany({ agencyID })
+        await scheduleService.deleteMany({ agencyID })
 
         return res.status(200).json(true)
     } catch (error) {

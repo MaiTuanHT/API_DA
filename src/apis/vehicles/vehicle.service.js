@@ -12,7 +12,13 @@ class VehicleService {
 
     async findAll() {
         try {
-            const vehicles = VehicleModel.find()
+            const vehicles = VehicleModel.find().populate({
+                path: 'scheduleID',
+                populate: {
+                    path: 'routeID',
+                    model: 'routes'
+                }
+            })
             if (!vehicles) {
                 throw {
                     code: 404,

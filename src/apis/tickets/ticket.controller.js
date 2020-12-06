@@ -58,22 +58,18 @@ async function findAllTicket(req, res) {
 
 async function findTicketForSearch(req, res) {
     try {
-        const { phone, date } = req.query;
-        console.log(phone)
-        console.log(date)
+        const { phone, date } = req.params;
         let ticketSearch = []
         const tickets = await ticketService.findAll()
-            // console.log(tickets);
 
         tickets.forEach(ticket => {
             if (ticket.phone == phone && ticket.scheduleID.date == date) {
                 ticketSearch.push(ticket)
             }
         });
-        if (ticketSearch) {
-            console.log(ticketSearch)
-            return res.status(200).json(ticketSearch);
-        }
+        console.log("ticket search neeeeeeeeeeeeeeee...........")
+        console.log(ticketSearch)
+        return res.status(200).json(ticketSearch);
     } catch (error) {
         checkError(error, res)
     }
