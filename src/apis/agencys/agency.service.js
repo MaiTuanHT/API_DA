@@ -87,8 +87,6 @@ class AgencyService {
                 }
             }
 
-            console.log(agency)
-
             const agencyUpdate = await AgencyModel.updateOne({ _id: id }, data)
 
             return agencyUpdate

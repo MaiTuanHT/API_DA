@@ -23,10 +23,10 @@ async function createOneRate(req, res) {
             }
         }
         const listRate = await rateService.findMany({})
-        let checkRate = false;
+        let checkRate;
         for (var i = 0; i < listRate.length; i++) {
             if (listRate[i].agencyID == agencyID && listRate[i].userID == userID) {
-                checkRate = true
+                checkRate = listRate[i]
                 break
             }
         }
@@ -36,11 +36,17 @@ async function createOneRate(req, res) {
                 service,
                 medium: (service + quality) / 2
             }
-            const rateUpdate = await rateService.update(checkRate._id, dataUpdate)
+
+            const result = await rateService.update(checkRate._id, dataUpdate)
+
+            const rateUpdate = await rateService.findOne({ _id: checkRate._id })
+
             const agency = await agencyService.findOne({ _id: agencyID })
+
             const dataAgency = {
-                scoreRate: (agency.scoreRate * agency.totalRate + rateUpdate.medium - checkRate.medium) / agency.totalRate
+                scoreRate: (((agency.scoreRate * agency.totalRate + rateUpdate.medium - checkRate.medium) / agency.totalRate).toPrecision(2))
             }
+
             const agencyUpdate = await agencyService.update(agencyID, dataAgency)
             return res.status(201).json(rateUpdate)
         } else {
@@ -57,7 +63,7 @@ async function createOneRate(req, res) {
             const agency = await agencyService.findOne({ _id: agencyID })
 
             const newRateAgency = {
-                scoreRate: (agency.scoreRate * agency.totalRate + newRate.medium) / (agency.totalRate + 1),
+                scoreRate: (((agency.scoreRate * agency.totalRate + newRate.medium) / (agency.totalRate + 1)).toPrecision(2)),
                 totalRate: agency.totalRate + 1
             }
             const agencyUpdate = await agencyService.update(agencyID, newRateAgency)

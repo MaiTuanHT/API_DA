@@ -71,12 +71,13 @@ async function findAllSchedule(req, res) {
 
 async function findAllScheduleForSearch(req, res) {
     try {
-        const { stopLocation, startLocation } = req.query;
+        const { stopLocation, startLocation, date } = req.query;
         const schedules = await scheduleService.findMany({})
         let list = []
         if (schedules) {
             schedules.forEach(schedule => {
-                if (schedule.routeID.startLocation == startLocation && schedule.routeID.stopLocation == stopLocation) {
+                if (schedule.routeID.startLocation == startLocation && schedule.routeID.stopLocation == stopLocation &&
+                    schedule.date == date) {
                     list.push(schedule)
                 }
             });
