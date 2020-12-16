@@ -12,6 +12,9 @@ router.put('/:scheduleID', authenticate, authorization("Staff"), ScheduleControl
 router.delete('/:scheduleID', authenticate, authorization("Staff"), ScheduleController.deleteSchedule)
 
 router.get('', ScheduleController.findAllSchedule)
+router.get('/schedule/:scheduleID', ScheduleController.findOneSchedule)
+router.get('/key/:key', ScheduleController.findScheduleOfKey)
+
 router.get('/agency', authenticate, authorization("Staff"), ScheduleController.findAllScheduleOfAgency)
 router.get('/many/', scheduleController.findAllScheduleForSearch)
 

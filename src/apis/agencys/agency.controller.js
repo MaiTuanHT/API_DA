@@ -10,6 +10,7 @@ import UserService from '../users/user.service'
 import VehicleService from '../vehicles/vehicle.service'
 import BusService from '../buses/bus.service'
 import ScheduleService from '../schedules/schedule.service'
+import RateService from '../rates/rates.service'
 
 
 const agencyService = new AgencyService()
@@ -22,6 +23,7 @@ const roleService = new RoleService()
 const vehicleService = new VehicleService()
 const busService = new BusService()
 const scheduleService = new ScheduleService()
+const rateService = new RateService()
 
 async function createOneAgency(req, res) {
     try {
@@ -115,6 +117,7 @@ async function deleteAgency(req, res) {
         await routeService.deleteMany({ agencyID })
         await busService.deleteMany({ agencyID })
         await scheduleService.deleteMany({ agencyID })
+        await rateService.deleteMany({ agencyID })
 
         return res.status(200).json(true)
     } catch (error) {
@@ -150,6 +153,58 @@ async function findManyAgency(req, res) {
     }
 }
 
+
+async function updateAgency(req, res) {
+    try {
+
+        console.log("vao day")
+
+        const { user } = req
+        if (!user) {
+            throw {
+                code: 401,
+                name: 'UnAuthorization'
+            }
+        }
+        const role = await roleService.findOne({ userID: user._id, roleName: "Manager" })
+        if (!role || role == undefined || role == null) {
+            throw {
+                code: 401,
+                name: 'NotFound'
+            }
+        }
+
+        const { nameAgency, phoneNumber, discription, policy, utilities } = req.body
+        let data = {}
+        if (nameAgency) {
+            data.nameAgency = nameAgency
+        }
+        if (phoneNumber) {
+            data.phoneNumber = phoneNumber
+        }
+
+
+        if (discription) {
+            data.discription = discription
+        }
+
+        if (policy) {
+            data.policy = policy
+        }
+
+        if (utilities) {
+            data.utilities = utilities
+        }
+
+
+        const AgencyUpdate = await agencyService.update(role.agencyID, data)
+
+        return res.status(200).json(AgencyUpdate)
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
 export default {
     createOneAgency,
     findAllAgency,
@@ -157,4 +212,5 @@ export default {
     deleteAgency,
     findManyAgency,
     findManyAgencyByRoute,
+    updateAgency
 }

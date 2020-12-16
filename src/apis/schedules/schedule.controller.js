@@ -3,10 +3,12 @@ import BusService from '../buses/bus.service'
 
 import checkError from '../../helpers/checkError'
 import RoleService from '../roles/role.service'
+import TicketService from '../tickets/ticket.service'
 
 const roleService = new RoleService()
 const scheduleService = new ScheduleService()
 const busService = new BusService()
+const ticketService = new TicketService()
 
 
 
@@ -119,6 +121,26 @@ async function findScheduleOfAgencyRoute(req, res) {
     }
 }
 
+async function findScheduleOfKey(req, res) {
+    try {
+        console.log("da vao day")
+        const { key } = req.params
+        const listSchedule = [];
+        const schedules = await scheduleService.findMany({})
+        console.log(" length : ", schedules.length)
+        for (var i = 0; i < schedules.length; i++) {
+            let keyIn = schedules[i].routeID.startLocation + "-" + schedules[i].routeID.stopLocation
+            if (keyIn == key) {
+                listSchedule.push(schedules[i])
+            }
+        }
+        console.log("lenth list", listSchedule.length)
+        return res.status(200).json(listSchedule);
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
 async function findAllScheduleOfAgency(req, res) {
     try {
         const { user } = req
@@ -139,17 +161,18 @@ async function findAllScheduleOfAgency(req, res) {
 }
 
 
+
+
 async function findOneSchedule(req, res) {
     try {
-        console.log("da vao laylich trinh ")
+
+        console.log("da vao tim kiem 1 lich trinh")
+
         const { scheduleID } = req.params
         console.log("schedule ID : ", scheduleID)
         const schedule = await scheduleService.findOne({
             _id: scheduleID
         })
-
-        console.log("schedule : ", schedule)
-
         return res.status(200).json(schedule)
     } catch (error) {
         checkError(error, res)
@@ -196,10 +219,9 @@ async function updateSchedule(req, res) {
 async function deleteSchedule(req, res) {
     try {
         const { scheduleID } = req.params
-
         console.log("schedule id : ", scheduleID)
-
         await scheduleService.delete({ _id: scheduleID })
+        await ticketService.deleteMany({ scheduleID: scheduleID })
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)
@@ -216,5 +238,6 @@ export default {
     findAllScheduleForSearch,
     findAllScheduleOfAgency,
     updateSchedule,
-    findScheduleOfAgencyRoute
+    findScheduleOfAgencyRoute,
+    findScheduleOfKey
 }

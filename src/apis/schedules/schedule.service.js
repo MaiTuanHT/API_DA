@@ -48,7 +48,6 @@ class ScheduleService {
                     name: 'NotFoundSchedule'
                 }
             }
-
             return schedule
         } catch (error) {
             throw error

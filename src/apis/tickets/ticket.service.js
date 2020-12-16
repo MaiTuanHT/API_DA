@@ -46,6 +46,12 @@ class TicketService {
                     path: 'busID',
                     model: 'buses'
                 }
+            }).populate({
+                path: 'scheduleID',
+                populate: {
+                    path: 'agencyID',
+                    model: 'agencys'
+                }
             })
             return tickets
         } catch (error) {
@@ -78,6 +84,15 @@ class TicketService {
                 }
             }
             await TicketModel.remove(ticket)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteMany(query) {
+        try {
+            await TicketModel.deleteMany(query)
             return true
         } catch (error) {
             throw error

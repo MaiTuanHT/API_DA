@@ -9,8 +9,11 @@ async function createTicket(req, res) {
     try {
         const { fullName, phone, scheduleID } = req.body
         let { seat } = req.body
-        if (seat == null || seat == undefined) {
-            seat = 1;
+        if (seat == null || seat == undefined || seat < 1) {
+            throw {
+                code: 404,
+                name: 'Seat invalid'
+            }
         }
 
         if (!fullName || fullName == undefined ||
@@ -59,15 +62,23 @@ async function findAllTicket(req, res) {
 async function findTicketForSearch(req, res) {
     try {
         const { phone, date } = req.params;
+
         let ticketSearch = []
-        const tickets = await ticketService.findAll()
+        const tickets = await ticketService.findMany({})
+
+
 
         tickets.forEach(ticket => {
+
+            console.log("ticket : ", ticket)
+
+            console.log("date trong lich : ", ticket.scheduleID.date)
+
             if (ticket.phone == phone && ticket.scheduleID.date == date) {
                 ticketSearch.push(ticket)
             }
         });
-        console.log("ticket search neeeeeeeeeeeeeeee...........")
+
         console.log(ticketSearch)
         return res.status(200).json(ticketSearch);
     } catch (error) {

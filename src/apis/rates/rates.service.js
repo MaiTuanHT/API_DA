@@ -28,12 +28,6 @@ class RateService {
     async findOne(query) {
         try {
             const rate = await RateModel.findOne(query).populate('agencyID').populate('userID')
-            if (!rate) {
-                throw {
-                    code: 404,
-                    name: 'NotFoundRate'
-                }
-            }
             return rate
         } catch (error) {
             throw error
@@ -50,6 +44,15 @@ class RateService {
                 }
             }
             await RateModel.remove(rate)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteMany(query) {
+        try {
+            await RateModel.deleteMany(query)
             return true
         } catch (error) {
             throw error

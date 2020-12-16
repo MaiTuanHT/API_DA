@@ -6,9 +6,12 @@ import config from '../../configs/index'
 import error from '../../constants/error'
 import roleControler from '../roles/role.controller'
 import RoleService from '../roles/role.service'
+import RateService from '../rates/rates.service'
+
 
 const userService = new UserService()
 const roleService = new RoleService()
+const rateService = new RateService()
 
 async function createAdmin(req, param) {
 
@@ -243,9 +246,13 @@ async function deleteUser(req, res) {
                 name: "Không được xóa Manager"
             }
         } else {
-            console.log("vao dell")
             await userService.delete({ _id: userID })
             await roleService.delete({ userID })
+            const rate = await rateService.findOne({ userID })
+            if (rate) {
+                await rateService.delete({ userID })
+            }
+
             return res.status(200).json(true)
         }
     } catch (error) {
@@ -263,5 +270,4 @@ export default {
     findUserOfAgency,
     findAllClient,
     createAdmin
-    //signOut
 }

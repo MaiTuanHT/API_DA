@@ -10,16 +10,16 @@ import ev from 'express-validation'
 
 async function boostrapServer() {
 
-       const app = express()
+    const app = express()
     await connectToDatabase(config.database)
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({
         extended: false
     }));
-
-    app.use(api)
     app.use(cors())
+    app.use(api)
+
     app.use(handleValidationError)
 
     app.listen(config.port, (error) => {
@@ -33,12 +33,12 @@ async function boostrapServer() {
 
 
 function handleValidationError(error, req, res, _) {
-  if (error instanceof ev.ValidationError) {
-    return res.status(error.status).json({
-      code: error.status,
-      message: error.errors[0].messages[0].split('"').join('').split('undefined').join('')
-    })
-  }
+    if (error instanceof ev.ValidationError) {
+        return res.status(error.status).json({
+            code: error.status,
+            message: error.errors[0].messages[0].split('"').join('').split('undefined').join('')
+        })
+    }
 }
 
 boostrapServer()
