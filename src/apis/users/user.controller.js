@@ -223,6 +223,8 @@ async function findOneUser(req, res) {
         const user = await userService.findOne({
             _id: userID
         })
+
+        console.log("user : ", user)
         return res.status(200).json(user)
     } catch (error) {
         checkError(error, res)

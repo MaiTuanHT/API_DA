@@ -24,15 +24,17 @@ async function createTicket(req, res) {
             }
         }
         const schedule = await scheduleService.findOne({ _id: scheduleID })
-        const data = {
-            fullName,
-            phone,
-            scheduleID: schedule._id
-        }
+
         let tickets = []
         const promises = []
 
         for (var i = 0; i < seat; i++) {
+            let data = {
+                fullName,
+                phone,
+                scheduleID: schedule._id,
+                orderNumber: schedule.booked + i + 1
+            }
             promises.push(ticketService.createOne(data))
         }
         tickets = await Promise.all(promises)
@@ -140,8 +142,23 @@ async function findOneTicket(req, res) {
 async function deleteTicket(req, res) {
     try {
         const { ticketID } = req.params
-
         const ticket = await ticketService.findOne({ _id: ticketID })
+
+        const listTicket = await ticketService.findMany({})
+
+        let tickets = []
+        const promises = []
+
+        for (var i = 0; i < listTicket.length; i++) {
+            if (listTicket[i].orderNumber > ticket.orderNumber) {
+                let data = {
+                    orderNumber: listTicket[i].orderNumber - 1
+                }
+                promises.push(ticketService.update(listTicket[i]._id, data))
+            }
+        }
+        tickets = await Promise.all(promises)
+
         const schedule = await scheduleService.update(ticket.scheduleID._id, { booked: ticket.scheduleID.booked - 1 })
 
         await ticketService.delete({ _id: ticketID })
@@ -151,6 +168,21 @@ async function deleteTicket(req, res) {
     }
 }
 
+async function updateTicket(req, res) {
+    try {
+        const { ticketID } = req.params
+        let data = {
+            status: true
+        }
+
+        const ticketUpdate = await ticketService.update(ticketID, data)
+        return res.status(200).json(true)
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
+
 
 export default {
     createTicket,
@@ -159,5 +191,6 @@ export default {
     findOneTicket,
     findTicketForSearch,
     deleteTicket,
+    updateTicket,
     findManyTicketOfSchedule
 }

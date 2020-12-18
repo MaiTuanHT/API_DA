@@ -84,7 +84,7 @@ async function createOneAgency(req, res) {
 async function findAllAgency(req, res) {
     try {
         const agencys = await agencyService.findAll()
-            // console.log(agencys);
+        console.log("agency", agencys);
         return res.status(200).json(agencys);
     } catch (error) {
         checkError(error, res)

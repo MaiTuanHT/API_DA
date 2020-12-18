@@ -15,6 +15,7 @@ router.get('', TicketController.findAllTicket)
 
 router.get('/:userID', authenticate, authorization("Client"), TicketController.findManyTicket)
 router.get('/:ticketID', TicketController.findOneTicket)
-router.delete('/:ticketID', TicketController.deleteTicket)
+router.put('/:ticketID', authenticate, authorization("Staff"), TicketController.updateTicket)
+router.delete('/:ticketID', authenticate, authorization("Staff"), TicketController.deleteTicket)
 
 export default router

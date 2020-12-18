@@ -31,7 +31,7 @@ class UserService {
 
     async findOne(query) {
         try {
-            const user = await UserModel.findOne(query)
+            const user = await UserModel.findOne(query).populate('agencyID')
             if (!user) {
                 throw {
                     code: 404,

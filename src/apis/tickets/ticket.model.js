@@ -14,7 +14,15 @@ const ticketSchema = new Schema({
         type: Types.ObjectId,
         ref: 'schedules',
         required: true,
+    },
+    orderNumber: {
+        type: Number,
+        require: true
+    },
+    status: {
+        type: Boolean,
+        default: false
     }
-})
+}, { timestamps: true })
 
 export default model('tickets', ticketSchema)

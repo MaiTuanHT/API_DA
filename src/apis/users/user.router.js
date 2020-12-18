@@ -9,6 +9,8 @@ const router = Router()
 
 router.post('', authenticate, authorization("Manager"), UserController.createOneUser)
 
+// router.post('/createAdmin', UserController.createAdmin)
+
 router.delete('/:userID', authenticate, authorization("Manager"), UserController.deleteUser)
 router.delete('/admin/:userID', authenticate, authorization('Admin'), UserController.deleteUser)
 
@@ -20,7 +22,7 @@ router.get('/list-staff', authenticate, authorization('Manager'), UserController
 
 router.get('/client', authenticate, authorization('Admin'), UserController.findAllClient)
 
-router.get('/:userID', UserController.findOneUser)
+router.get('/:userID', authenticate, UserController.findOneUser)
 
 
 export default router

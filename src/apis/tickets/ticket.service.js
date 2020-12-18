@@ -99,6 +99,24 @@ class TicketService {
         }
     }
 
+    async update(id, data) {
+        try {
+            const ticket = await TicketModel.findById(id)
+            if (!ticket) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundTicket'
+                }
+            }
+
+            const ticketUpdate = await TicketModel.updateOne({ _id: id }, data)
+
+            return ticketUpdate
+        } catch (error) {
+            throw error
+        }
+    }
+
 
 }
 

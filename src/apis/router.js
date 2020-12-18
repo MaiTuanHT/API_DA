@@ -7,6 +7,7 @@ import AgencyRouteRouter from './agency_routes/agency_routes.router'
 import TicketRouter from './tickets/ticket.router'
 import RateRouter from './rates/rates.router'
 import ScheduleRouter from './schedules/schedule.router'
+import ImageRouter from './images/image.router'
 // import ScheduleAgencyRouter from './schedules/scheduleAgency.route'
 import Router from 'express'
 
@@ -21,6 +22,7 @@ api.use('/tickets/', TicketRouter)
 api.use('/rates/', RateRouter)
 api.use('/schedules/', ScheduleRouter)
 api.use('/agency_route/', AgencyRouteRouter)
+api.use('/images/', ImageRouter)
 
 
 export default api

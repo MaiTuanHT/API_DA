@@ -12,7 +12,6 @@ router.delete('/:agencyID', authenticate, authorization("Admin"), AgencyControll
 
 router.get('', AgencyController.findAllAgency)
 router.get('/admin', authenticate, authorization("Admin"), AgencyController.findAllAgency)
-    // router.get('/listAgnecy',AgencyController.findManyAgency)
 router.get('/list', AgencyController.findManyAgencyByRoute)
 router.get('/:route', AgencyController.findManyAgency)
 router.get('/:agencyID', AgencyController.findOneAgency)

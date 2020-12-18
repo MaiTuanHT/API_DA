@@ -20,7 +20,8 @@ const userSchema = new Schema({
         default: null,
     },
     agencyID: {
-        type: String
+        type: Types.ObjectId,
+        ref: 'agencys'
     }
 })
 export default model('users', userSchema)

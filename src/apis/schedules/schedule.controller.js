@@ -21,19 +21,9 @@ async function createOneSchedule(req, res) {
                 name: 'ErrorEmpty'
             }
         }
-
-
-
         const list_schedule = await scheduleService.findMany({})
 
         for (var i = 0; i < list_schedule.length; i++) {
-
-            console.log("list id : ", list_schedule[i].busID)
-            console.log("id : ", busID)
-
-
-            console.log("date list : ", list_schedule[i].date)
-            console.log("date : ", date)
 
             if (list_schedule[i].busID._id == busID && list_schedule[i].date == date) {
                 throw {
@@ -63,9 +53,27 @@ async function createOneSchedule(req, res) {
 
 async function findAllSchedule(req, res) {
     try {
+
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        console.log("Ngay : ", date)
+
+        let listSchedule = []
+
         const schedules = await scheduleService.findMany({})
-        console.log(schedules);
-        return res.status(200).json(schedules);
+
+        schedules.forEach(schedule => {
+
+            // console.log()
+
+            if (schedule.date >= date) {
+                listSchedule.push(schedule)
+            }
+        });
+
+        console.log("length : ", listSchedule.length)
+            // console.log(schedules);
+        return res.status(200).json(listSchedule);
     } catch (error) {
         checkError(error, res)
     }
@@ -75,11 +83,15 @@ async function findAllScheduleForSearch(req, res) {
     try {
         const { stopLocation, startLocation, date } = req.query;
         const schedules = await scheduleService.findMany({})
+
+        var today = new Date()
+        var dateNow = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
         let list = []
         if (schedules) {
             schedules.forEach(schedule => {
                 if (schedule.routeID.startLocation == startLocation && schedule.routeID.stopLocation == stopLocation &&
-                    schedule.date == date) {
+                    schedule.date == date && schedule.date >= dateNow) {
                     list.push(schedule)
                 }
             });
@@ -94,8 +106,18 @@ async function findManySchedule(req, res) {
     try {
         const { agencyID } = req.params;
         const schedules = await scheduleService.findMany({ agencyID: agencyID })
+
+        let listSchedule = []
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+        schedules.forEach(schedule => {
+            if (schedule.date >= date) {
+                listSchedule.push(schedule)
+            }
+        });
         console.log(schedules)
-        return res.status(200).json(schedules);
+        return res.status(200).json(listSchedule);
     } catch (error) {
         checkError(error, res)
     }
@@ -103,6 +125,8 @@ async function findManySchedule(req, res) {
 
 async function findScheduleOfAgencyRoute(req, res) {
     try {
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         console.log("da vao day")
         const { agencyID, startLocation, stopLocation } = req.params;
         const list = [];
@@ -110,7 +134,8 @@ async function findScheduleOfAgencyRoute(req, res) {
         console.log(" length : ", schedules.length)
         for (var i = 0; i < schedules.length; i++) {
             console.log("compare : ", (schedules[i].routeID.startLocation === startLocation) && (schedules[i].routeID.stopLocation === stopLocation))
-            if (schedules[i].routeID.startLocation === startLocation && schedules[i].routeID.stopLocation === stopLocation) {
+            if (schedules[i].routeID.startLocation === startLocation &&
+                schedules[i].routeID.stopLocation === stopLocation && schedules[i].date >= date) {
                 list.push(schedules[i])
             }
         }
@@ -123,14 +148,19 @@ async function findScheduleOfAgencyRoute(req, res) {
 
 async function findScheduleOfKey(req, res) {
     try {
-        console.log("da vao day")
+
+
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+
         const { key } = req.params
         const listSchedule = [];
         const schedules = await scheduleService.findMany({})
-        console.log(" length : ", schedules.length)
+
         for (var i = 0; i < schedules.length; i++) {
             let keyIn = schedules[i].routeID.startLocation + "-" + schedules[i].routeID.stopLocation
-            if (keyIn == key) {
+            if (keyIn == key && schedules[i].date >= date) {
                 listSchedule.push(schedules[i])
             }
         }
