@@ -80,14 +80,19 @@ async function createOneUser(req, res) {
 
         if (!newUser || newUser == undefined || newUser == null) {
             throw {
+                code: 400,
                 name: 'NotCreate'
             }
         }
         const userID = newUser._id
-        const roleName = 'Staff'
+        let roleName = 'Staff'
         const agencyID = role.agencyID
-        const newrole = { userID, agencyID, roleName }
-        await roleControler.createOneRole(newrole, res)
+        const newroleS = { userID, agencyID, roleName }
+        roleName = 'Client'
+        const newroleC = { userID, agencyID, roleName }
+
+        await roleControler.createOneRole(newroleS, res)
+        await roleControler.createOneRole(newroleC, res)
 
         console.log("new user : ", newUser)
         return res.status(201).json(newUser)
@@ -249,7 +254,7 @@ async function deleteUser(req, res) {
             }
         } else {
             await userService.delete({ _id: userID })
-            await roleService.delete({ userID })
+            await roleService.deleteMany({ userID })
             const rate = await rateService.findOne({ userID })
             if (rate) {
                 await rateService.delete({ userID })

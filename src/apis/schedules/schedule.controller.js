@@ -248,7 +248,15 @@ async function updateSchedule(req, res) {
 
 async function deleteSchedule(req, res) {
     try {
+
         const { scheduleID } = req.params
+        const schedule = await scheduleService.findOne({ _id: scheduleID })
+        if (schedule && schedule.booked > 0) {
+            throw {
+                code: 400,
+                name: "Bạn Không thể xóa lịch trình đã có người đặt vé"
+            }
+        }
         console.log("schedule id : ", scheduleID)
         await scheduleService.delete({ _id: scheduleID })
         await ticketService.deleteMany({ scheduleID: scheduleID })

@@ -26,6 +26,10 @@ const agencySchema = new Schema({
         type: String,
         required: false
     },
+    ticketPaymentDealine: {
+        type: Number,
+        required: false
+    },
     scoreRate: {
         type: Number,
         default: 0

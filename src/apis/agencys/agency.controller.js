@@ -36,7 +36,7 @@ async function createOneAgency(req, res) {
             }
         }
 
-        const { nameAgency, phoneNumber, discription, utilities, policy } = req.body
+        const { nameAgency, phoneNumber, discription, utilities, policy, ticketPaymentDealine } = req.body
         console.log(nameAgency)
         console.log(phoneNumber)
         if (!nameAgency || nameAgency == undefined || !phoneNumber || phoneNumber == undefined) {
@@ -46,7 +46,7 @@ async function createOneAgency(req, res) {
                 name: 'ErrorEmpty'
             }
         }
-        const data = {
+        let data = {
             nameAgency,
             phoneNumber,
             author: user._id,
@@ -54,6 +54,11 @@ async function createOneAgency(req, res) {
             utilities,
             policy
         }
+
+        if (ticketPaymentDealine) {
+            data.ticketPaymentDealine = ticketPaymentDealine
+        }
+
         const newAgency = await agencyService.CreateOne(data)
         if (newAgency) {
             const userID = user._id
@@ -174,7 +179,7 @@ async function updateAgency(req, res) {
             }
         }
 
-        const { nameAgency, phoneNumber, discription, policy, utilities } = req.body
+        const { nameAgency, phoneNumber, discription, policy, utilities, ticketPaymentDealine } = req.body
         let data = {}
         if (nameAgency) {
             data.nameAgency = nameAgency
@@ -194,6 +199,10 @@ async function updateAgency(req, res) {
 
         if (utilities) {
             data.utilities = utilities
+        }
+
+        if (ticketPaymentDealine) {
+            data.ticketPaymentDealine = ticketPaymentDealine
         }
 
 

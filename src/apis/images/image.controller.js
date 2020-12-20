@@ -42,7 +42,7 @@ async function CreateImage(req, res) {
         const userAgency = await userService.findOne({ _id: user._id })
 
         upload.single(image)
-        console("file : ", req.file)
+        console.log("file : ", req)
         const data = {
             name: images,
             image_path,
