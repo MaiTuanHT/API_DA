@@ -36,12 +36,11 @@ async function createOneRoute(req, res) {
             stopLocation,
         }
 
-        const list_route = await routeService.findAll()
+        const list_route = await routeService.findMany({ agencyID: user.agencyID })
 
 
         for (let i = 0; i < list_route.length; i++) {
-            if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation &&
-                role.agencyID == list_route[i].agencyID) {
+            if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation) {
                 throw {
                     code: 400,
                     name: "Already Exis"
@@ -109,8 +108,21 @@ async function findOneRoute(req, res) {
 
 async function updateRoute(req, res) {
     try {
+        const { user } = req
         const { routeID } = req.params
         const { startLocation, stopLocation } = req.body
+
+        const schedules = await scheduleService.findMany({ routeID: routeID })
+        schedules.forEach(schedule => {
+            if (schedule.booked > 0) {
+                throw {
+                    code: 400,
+                    name: "Bạn không thể sửa tuyến này. Trong tuyến này có lịch trình đã có người đặt vé"
+                }
+            }
+        });
+
+
         let data = {}
         if (startLocation) {
             data.startLocation = startLocation
@@ -119,7 +131,8 @@ async function updateRoute(req, res) {
             data.stopLocation = stopLocation
         }
 
-        const list_route = await routeService.findAll()
+        const list_route = await routeService.findMany({ agencyID: user.agencyID })
+
         for (let i = 0; i < list_route.length; i++) {
             if (list_route[i].startLocation == startLocation && list_route[i].stopLocation == stopLocation) {
                 throw {
@@ -139,11 +152,22 @@ async function updateRoute(req, res) {
 async function deleteRoute(req, res) {
     try {
         const { routeID } = req.params
+        const schedules = await scheduleService.findMany({ routeID: routeID })
+        schedules.forEach(schedule => {
+            if (schedule.booked > 0) {
+                throw {
+                    code: 400,
+                    name: "Bạn không thể xóa tuyến này. Trong tuyến này có lịch trình đã có người đặt vé"
+                }
+            }
+        });
+
         await routeService.delete({ _id: routeID })
         await busService.deleteMany({ routeID })
         await scheduleService.deleteMany({ routeID })
         await agencyRouteService.delete({ routeID })
         return res.status(200).json(true)
+
     } catch (error) {
         checkError(error, res)
     }

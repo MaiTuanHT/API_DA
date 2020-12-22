@@ -32,7 +32,19 @@ class ScheduleService {
     async findMany(query) {
         try {
 
-            const schedules = await ScheduleModel.find(query).populate('agencyID').populate('routeID').populate('busID').populate('vehicleID')
+            const schedules = await ScheduleModel.find(query).populate({
+                path: 'agencyID',
+                populate: {
+                    path: 'author',
+                    model: 'users'
+                }
+            }).populate({
+                path: 'busID',
+                populate: {
+                    path: 'routeID',
+                    model: 'routes'
+                }
+            }).populate('routeID').populate('vehicleID')
             return schedules
         } catch (error) {
             throw error

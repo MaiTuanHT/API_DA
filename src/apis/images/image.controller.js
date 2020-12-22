@@ -32,6 +32,8 @@ async function CreateImage(req, res) {
     try {
         const { user } = req
 
+        console.log("file : ", req)
+
         if (!user) {
             throw {
                 code: 401,
@@ -42,7 +44,6 @@ async function CreateImage(req, res) {
         const userAgency = await userService.findOne({ _id: user._id })
 
         upload.single(image)
-        console.log("file : ", req)
         const data = {
             name: images,
             image_path,

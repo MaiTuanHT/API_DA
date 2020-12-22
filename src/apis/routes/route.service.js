@@ -36,6 +36,21 @@ class RouteService {
         }
     }
 
+    async findMany(query) {
+        try {
+            const routes = RouteModel.find(query).populate('agencyID')
+            if (!routes) {
+                throw {
+                    code: 404,
+                    name: 'NotFoundRoute'
+                }
+            }
+            return routes
+        } catch (error) {
+            throw error
+        }
+    }
+
     async findOne(query) {
         try {
             const route = await RouteModel.findOne(query).populate('agencyID')

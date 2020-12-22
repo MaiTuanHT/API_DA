@@ -15,6 +15,7 @@ router.get('/admin', authenticate, authorization("Admin"), AgencyController.find
 router.get('/list', AgencyController.findManyAgencyByRoute)
 router.get('/:route', AgencyController.findManyAgency)
 router.get('/:agencyID', AgencyController.findOneAgency)
+router.get('/agency', authenticate, authorization("Manager"), AgencyController.findAgencyOfManager)
 router.delete('/:agencyID', AgencyController.deleteAgency)
 
 export default router

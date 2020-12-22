@@ -90,7 +90,7 @@ async function findAllScheduleForSearch(req, res) {
         let list = []
         if (schedules) {
             schedules.forEach(schedule => {
-                if (schedule.routeID.startLocation == startLocation && schedule.routeID.stopLocation == stopLocation &&
+                if (schedule.busID.routeID.startLocation == startLocation && schedule.busID.routeID.stopLocation == stopLocation &&
                     schedule.date == date && schedule.date >= dateNow) {
                     list.push(schedule)
                 }
@@ -159,7 +159,7 @@ async function findScheduleOfKey(req, res) {
         const schedules = await scheduleService.findMany({})
 
         for (var i = 0; i < schedules.length; i++) {
-            let keyIn = schedules[i].routeID.startLocation + "-" + schedules[i].routeID.stopLocation
+            let keyIn = schedules[i].busID.routeID.startLocation + "-" + schedules[i].busID.routeID.stopLocation
             if (keyIn == key && schedules[i].date >= date) {
                 listSchedule.push(schedules[i])
             }
@@ -204,6 +204,21 @@ async function findOneSchedule(req, res) {
             _id: scheduleID
         })
         return res.status(200).json(schedule)
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
+
+async function findScheduleOfRoute(req, res) {
+    try {
+
+        const { routeID } = req.params
+        console.log("schedule ID : ", scheduleID)
+        const schedules = await scheduleService.findMany({
+            routeID: routeID
+        })
+        return res.status(200).json(schedules)
     } catch (error) {
         checkError(error, res)
     }
@@ -277,5 +292,6 @@ export default {
     findAllScheduleOfAgency,
     updateSchedule,
     findScheduleOfAgencyRoute,
-    findScheduleOfKey
+    findScheduleOfKey,
+    findScheduleOfRoute
 }

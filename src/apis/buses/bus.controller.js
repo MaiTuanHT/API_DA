@@ -10,7 +10,7 @@ const roleService = new RoleService()
 
 const busService = new BusService()
 const routeService = new RouteService()
-const scheduleServie = new ScheduleService()
+const scheduleService = new ScheduleService()
 
 
 async function createOneBus(req, res) {
@@ -98,9 +98,18 @@ async function findOneBus(req, res) {
 async function deleteBus(req, res) {
     try {
         const { busID } = req.params
+        const schedules = await scheduleService.findMany({ busID: busID })
+        schedules.forEach(schedule => {
+            if (schedule.booked > 0) {
+                throw {
+                    code: 400,
+                    name: "Bạn không thể xóa chuyến này. Trong chuyến này có lịch trình đã có người đặt vé"
+                }
+            }
+        });
         console.log("bus ID : ", busID)
         await busService.delete({ _id: busID })
-        await scheduleServie.deleteMany({ busID: busID })
+        await scheduleService.deleteMany({ busID: busID })
         return res.status(200).json(true)
     } catch (error) {
         checkError(error, res)
@@ -111,6 +120,17 @@ async function deleteBus(req, res) {
 async function updateBus(req, res) {
     try {
         const { busID } = req.params
+
+        const schedules = await scheduleService.findMany({ busID: busID })
+        schedules.forEach(schedule => {
+            if (schedule.booked > 0) {
+                throw {
+                    code: 400,
+                    name: "Bạn không thể sửa chuyến này. Trong chuyến này có lịch trình đã có người đặt vé"
+                }
+            }
+        });
+
         console.log("bus id : ", busID)
         const { departureTime, seat, routeID } = req.body
         let data = {}

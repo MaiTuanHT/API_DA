@@ -108,6 +108,19 @@ async function findOneAgency(req, res) {
     }
 }
 
+async function findAgencyOfManager(req, res) {
+    try {
+        const { user } = req
+        const manage = await userService.findOne({ _id: user._id })
+        const agency = await agencyService.findOne({
+            _id: manage.agencyID
+        })
+        return res.status(200).json(agency)
+    } catch (error) {
+        checkError(error, res)
+    }
+}
+
 async function deleteAgency(req, res) {
     try {
         const { agencyID } = req.params
@@ -221,5 +234,6 @@ export default {
     deleteAgency,
     findManyAgency,
     findManyAgencyByRoute,
-    updateAgency
+    updateAgency,
+    findAgencyOfManager
 }
